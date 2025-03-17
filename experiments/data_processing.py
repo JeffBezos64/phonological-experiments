@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/ParrishSharma_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/GloveFastText_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 #default is data_processing.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -52,8 +52,8 @@ import tracemalloc
 
 
 
-process_parrish = True
-process_sharma = True
+process_parrish = False
+process_sharma = False
 process_zouhar = False
 process_fasttext = False
 process_glove = False
@@ -126,7 +126,7 @@ else:
 
 
     data_stopwords = preprocess(data, remove_stopwords=True)
-    data_stopwords_df = pd.DataFrame(np.array(data_stopwords, dtype='object').T, columns=['data_spellcheck_stopwords'])
+    data_stopwords_df = pd.DataFrame(np.array(data_stopwords, dtype='object').T, columns=['data_stopwords'])
     with open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/data_stopwords.pkl', 'wb') as f:
         pickle.dump(data_stopwords_df, f)
         print('data_stopwords written to disk')
@@ -309,7 +309,7 @@ if process_zouhar == True:
             del current
             del peak
         logger.info(f'ZouharEmbedder {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Zouhar/'+str(column)+'.npz', transformed_data_matrix)
+        sp.sparse.save_npz(BASE_DIR+'Zouhar/'+str(file)+'.npz', transformed_data_matrix)
         del ZouharFeatureExtractorTrue
         del transformed_data_matrix
         del data_df 
