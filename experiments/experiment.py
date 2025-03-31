@@ -17,8 +17,10 @@ features = sp.sparse.load_npz(data_filepath)
 X = features
 y = labels
 print('data loaded, beginning classification')
-clf = LogisticRegressionCV(cv=5, random_state=42, max_iter=2000, verbose=True, solver='saga', n_jobs=23).fit(X,y)
+clf = LogisticRegressionCV(cv=5, random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial').fit(X,y)
+print('doing a prediction')
 clf.predict(X)
+print('doing a scoreing')
 clf.score(X,y)
 print('the end')
 
