@@ -97,6 +97,7 @@ for feature in FEATURE_TYPES:
                         clf = scores['estimator'][i]
                         X_ind = scores['indices']['test'][i]
                         X_tmp = [X[j] for j in X_ind]
+                        X_tmp = np.array(X_tmp)
                         X_tmp = X_tmp.reshape(-1,1)
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
@@ -147,6 +148,7 @@ for feature in FEATURE_TYPES:
                     clf = scores['estimator'][i]
                     X_ind = scores['indices']['test']
                     X_tmp = [X[j] for j in X_ind]
+                    X_tmp = np.array(X_tmp)
                     X_tmp = X_tmp.reshape(-1,1)
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
