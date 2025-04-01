@@ -9,7 +9,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import MaxAbsScaler
-from sklearn.metrics import make_scorer
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import time
 import logging
 import os
@@ -54,22 +54,24 @@ VALUES = ['True', 'False']
 FILENAMES = ['data_tokenize', 'data_spellcheck', 'data_spellcheck_lemmatize', 'data_spellcheck_stopwords', 'data_stopwords', 'data_lemmatize', 'data_lemmatize_stopwords', 'data_lemmatize_stopwords_spellcheck']
 LABELS = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/seed_42/full_labels_out_of_domain_experiment_dataframe_clean_chunks.pkl', 'rb')).label.values.tolist()
 
+scoring = ['f1_macro', 'precision', 'recall', 'accuracy']
+
 for feature in FEATURE_TYPES:
     for data_file in FILENAMES:
         if feature != 'Zouhar':
             for value in VALUES:
-                logger.DEBUG(f'entering {feature} {data_file} {value}')
-                data_filepath = BASE_DATA_DIR+'/'+feature+'/'+data_file+value+'.npz'
+                logger.info(f'entering {feature} {data_file} {value}')
+                data_filepath = BASE_DATA_DIR+feature+'/'+data_file+value+'.npz'
                 X = sp.sparse.load_npz(data_filepath)
                 y = LABELS
-                logger.DEBUG(f'loaded: {data_filepath}')
+                logger.info(f'loaded: {data_filepath}')
                 scaler = MaxAbsScaler()
                 scaler.fit(X)
                 X = scaler.transform(X)
                 skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
                 clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
-                scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, return_estimator=True, return_indices=True)
-                estimator_filepath = BASE_DATA_DIR+'/'+feature+'/'+'estimator'+data_file+value+'.pkl'
+                scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
+                estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+value+'.pkl'
                 with open(estimator_filepath, 'wb') as f:
                     pickle.dump(scores, f)
                 f.close()
@@ -77,20 +79,20 @@ for feature in FEATURE_TYPES:
                 del clf
                 del scores
                 del X
-                logger.DEBUG(f'exiting {feature} {data_file} {value}') 
+                logger.info(f'exiting {feature} {data_file} {value}') 
         else:
-            logger.DEBUG(f'entering {feature} {data_file}')
-            data_filepath = BASE_DATA_DIR+'/'+feature+'/'+data_file+'.npz'
+            logger.info(f'entering {feature} {data_file}')
+            data_filepath = BASE_DATA_DIR+feature+'/'+data_file+'.npz'
             X = sp.sparse.load_npz(data_filepath)
             y = LABELS
-            logger.DEBUG(f'loaded: {data_filepath}')
+            logger.info(f'loaded: {data_filepath}')
             scaler = MaxAbsScaler()
             scaler.fit(X)
             X = scaler.transform(X)
             skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
             clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
-            scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, return_estimator=True, return_indices=True)
-            estimator_filepath = BASE_DATA_DIR+'/'+feature+'/'+'estimator'+data_file+'.pkl'
+            scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
+            estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+'.pkl'
             with open(estimator_filepath, 'wb') as f:
                 pickle.dump(scores, f)
             f.close()
@@ -98,7 +100,7 @@ for feature in FEATURE_TYPES:
             del clf
             del scores
             del X
-            logger.DEBUG(f'exiting {feature} {data_file}')
+            logger.info(f'exiting {feature} {data_file}')
 
 logger.INFO('-----END OF RUN ------') 
 
