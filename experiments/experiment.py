@@ -133,7 +133,7 @@ for feature in FEATURE_TYPES:
                     pickle.dump(scores, f)
                     logger.info(f'saving estumator file with path: {estimator_filepath}')
                 f.close()
-                logger.info(f'results for: {feature} {data_file} {value}')
+                logger.info(f'results for: {feature} {data_file} ')
                 logger.info(f'f1 scores: {scores['test_f1_macro']}')
                 logger.info(f'precision: {scores['test_precision_macro']}')
                 logger.info(f'recall: {scores['test_recall_macro']}')
