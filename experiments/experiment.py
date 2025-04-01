@@ -93,18 +93,18 @@ for feature in FEATURE_TYPES:
 
                     del clf
                     for i in range(0,5):
-                        logger.info(f'generating confusion matrix {i} of 4 (total:5)')
+                        logger.info(f'generating confusion matrix {i+1} of 5 (total:5)')
                         clf = scores['estimator'][i]
                         X_ind = scores['indices']['test'][i]
                         X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
-                        disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_],values_format='d', normalize='all')
+                        disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_])
                         disp.plot()
                         disp.ax_.set_title(f'Confusion Matrix for Fold {i+1} of {feature}-{data_file}-{value}')
-                        disp.figure_.setfigwidth(50)
-                        disp.figure_.setfigheight(50)
-                        plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
+                        disp.figure_.set_figwidth(10)
+                        disp.figure_.set_figheight(10)
+                        plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+f'{i+1}'+'estimator'+data_file+value+'.svg'
                         disp.figure_.savefig(plot_estimator_filepath)
                         logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
                         logger.info(f'generation of confusion matrix {i+1} of 5 (total:5) complete')
@@ -144,19 +144,19 @@ for feature in FEATURE_TYPES:
 
                 del clf
                 for i in range(0,4):
-                    logger.info(f'generating confusion matrix {i} of 4 (total:5)')
+                    logger.info(f'generating confusion matrix {i+1} of 5 (total:5)')
                     clf = scores['estimator'][i]
                     X_ind = scores['indices']['test'][i]
                     X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
                     y_tmp =  [y[j] for j in X_ind]
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
-                    disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_],values_format='d', normalize='all')
+                    disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_])
                     disp.ax_.set_title(f'Confusion Matrix for Fold {i+1} of {feature}-{data_file}')
                     disp.plot()
-                    disp.figure_.setfigwidth(50)
-                    disp.figure_.setfigheight(50)
-                    plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+'.svg'
+                    disp.figure_.set_figwidth(10)
+                    disp.figure_.set_figheight(10)
+                    plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+f'{i+1}'+'estimator'+data_file+'.svg'
                     disp.figure_.savefig(plot_estimator_filepath)
                     logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
                     logger.info(f'generation of confusion matrix {i+1} of 5 (total:5) complete')
