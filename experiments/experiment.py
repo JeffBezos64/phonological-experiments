@@ -99,7 +99,7 @@ for feature in FEATURE_TYPES:
                         X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
-                        cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_, normalize='all')
+                        cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
                         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
                         disp.plot()
                         plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
@@ -149,7 +149,7 @@ for feature in FEATURE_TYPES:
                     y_tmp =  [y[j] for j in X_ind]
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
-                    cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_,normalize='all')
+                    cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
                     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
                     disp.plot()
                     plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+'.svg'
