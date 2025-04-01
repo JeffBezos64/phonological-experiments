@@ -101,11 +101,13 @@ for feature in FEATURE_TYPES:
                         predictions = clf.predict(X_tmp)
                         cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
                         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                        disp.figure_.setfigwidth(50)
+                        disp.figure_.setfigheight(50)
                         disp.plot()
                         plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
                         disp.figure_.savefig(plot_estimator_filepath)
                         logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
-                        logger.info(f'generation of confusion matrix {i} of 4 (total:5) complete')
+                        logger.info(f'generation of confusion matrix {i+1} of 5 (total:5) complete')
                     del skf
                     del clf
                     del scores
@@ -152,10 +154,12 @@ for feature in FEATURE_TYPES:
                     cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
                     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
                     disp.plot()
+                    disp.figure_.setfigwidth(50)
+                    disp.figure_.setfigheight(50)
                     plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+'.svg'
                     disp.figure_.savefig(plot_estimator_filepath)
                     logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
-                    logger.info(f'generation of confusion matrix {i} of 4 (total:5) complete')
+                    logger.info(f'generation of confusion matrix {i+1} of 5 (total:5) complete')
                 del skf
                 del clf
                 del scores
