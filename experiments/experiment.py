@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/experiment.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/experiment.log', encoding='utf-8', level=logging.INFO, format='%(asctime)s %(message)s')
 #default is experiment.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -92,17 +92,15 @@ for feature in FEATURE_TYPES:
                     logger.info(f'fit time: {scores['fit_time']}')
 
                     del clf
-                    for i in range(0,4):
+                    for i in range(0,5):
                         logger.info(f'generating confusion matrix {i} of 4 (total:5)')
                         clf = scores['estimator'][i]
                         X_ind = scores['indices']['test'][i]
-                        X_tmp = [X[j] for j in X_ind]
-                        X_tmp = np.array(X_tmp)
-                        X_tmp = X_tmp.reshape(-1,1)
+                        X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
-                        cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
-                        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_],normalize='all',values_format= '.0%')
+                        cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_, normalize='all')
+                        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
                         disp.plot()
                         plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
                         disp.figure_.savefig(plot_estimator_filepath)
@@ -146,14 +144,13 @@ for feature in FEATURE_TYPES:
                 for i in range(0,4):
                     logger.info(f'generating confusion matrix {i} of 4 (total:5)')
                     clf = scores['estimator'][i]
-                    X_ind = scores['indices']['test']
-                    X_tmp = [X[j] for j in X_ind]
-                    X_tmp = np.array(X_tmp)
-                    X_tmp = X_tmp.reshape(-1,1)
+                    X_ind = scores['indices']['test'][i]
+                    X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
+                    y_tmp =  [y[j] for j in X_ind]
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
-                    cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
-                    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_],normalize='all',values_format= '.0%')
+                    cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_,normalize='all')
+                    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
                     disp.plot()
                     plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+'.svg'
                     disp.figure_.savefig(plot_estimator_filepath)
