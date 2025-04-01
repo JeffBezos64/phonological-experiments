@@ -95,12 +95,13 @@ for feature in FEATURE_TYPES:
                     for i in range(0,4):
                         logger.info(f'generating confusion matrix {i} of 4 (total:5)')
                         clf = scores['estimator'][i]
-                        X_ind = scores['indices']['test']
+                        X_ind = scores['indices']['test'][i]
                         X_tmp = [X[j] for j in X_ind]
+                        X_tmp = X_tmp.reshape(-1,1)
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
                         cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
-                        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_],normalize='all',values_format= '.0%')
                         disp.plot()
                         plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
                         disp.figure_.savefig(plot_estimator_filepath)
@@ -146,10 +147,11 @@ for feature in FEATURE_TYPES:
                     clf = scores['estimator'][i]
                     X_ind = scores['indices']['test']
                     X_tmp = [X[j] for j in X_ind]
+                    X_tmp = X_tmp.reshape(-1,1)
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
                     cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
-                    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_],normalize='all',values_format= '.0%')
                     disp.plot()
                     plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+'.svg'
                     disp.figure_.savefig(plot_estimator_filepath)
