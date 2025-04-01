@@ -9,6 +9,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import MaxAbsScaler
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 import time
 import logging
@@ -54,14 +56,69 @@ VALUES = ['True', 'False']
 FILENAMES = ['data_tokenize', 'data_spellcheck', 'data_spellcheck_lemmatize', 'data_spellcheck_stopwords', 'data_stopwords', 'data_lemmatize', 'data_lemmatize_stopwords', 'data_lemmatize_stopwords_spellcheck']
 LABELS = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/seed_42/full_labels_out_of_domain_experiment_dataframe_clean_chunks.pkl', 'rb')).label.values.tolist()
 
-scoring = ['f1_macro', 'precision', 'recall', 'accuracy']
+scoring = ['f1_macro', 'precision_macro', 'recall_macro', 'accuracy']
 
 for feature in FEATURE_TYPES:
     for data_file in FILENAMES:
         if feature != 'Zouhar':
             for value in VALUES:
                 logger.info(f'entering {feature} {data_file} {value}')
-                data_filepath = BASE_DATA_DIR+feature+'/'+data_file+value+'.npz'
+                estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+value+'.pkl'
+                if os.path.exists(estimator_filepath):
+                    logger.info('File already exists. Not processing.')
+                    logger.info(f'exiting {feature} {data_file} {value}')
+                else:
+                    data_filepath = BASE_DATA_DIR+feature+'/'+data_file+value+'.npz'
+                    X = sp.sparse.load_npz(data_filepath)
+                    y = LABELS
+                    logger.info(f'loaded: {data_filepath}')
+                    scaler = MaxAbsScaler()
+                    scaler.fit(X)
+                    X = scaler.transform(X)
+                    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+                    clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
+                    scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
+
+                
+                    with open(estimator_filepath, 'wb') as f:
+                        pickle.dump(scores, f)
+                        logger.info(f'saving estumator file with path: {estimator_filepath}')
+                    f.close()
+                    logger.info(f'results for: {feature} {data_file} {value}')
+                    logger.info(f'f1 scores: {scores['test_f1_macro']}')
+                    logger.info(f'precision: {scores['test_precision_macro']}')
+                    logger.info(f'recall: {scores['test_recall_macro']}')
+                    logger.info(f'accuracy: {scores['test_accuracy']}')
+                    logger.info(f'fit time: {scores['fit_time']}')
+
+                    del clf
+                    for i in range(0,4):
+                        logger.info(f'generating confusion matrix {i} of 4 (total:5)')
+                        clf = scores['estimator'][i]
+                        X_ind = scores['indices']['test']
+                        X_tmp = [X[j] for j in X_ind]
+                        y_tmp =  [y[j] for j in X_ind]
+                        predictions = clf.predict(X_tmp)
+                        cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
+                        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                        disp.plot()
+                        plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
+                        disp.figure_.savefig(plot_estimator_filepath)
+                        logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
+                        logger.info(f'generation of confusion matrix {i} of 4 (total:5) complete')
+                    del skf
+                    del clf
+                    del scores
+                    del X
+                    logger.info(f'exiting {feature} {data_file} {value}') 
+        else:
+            logger.info(f'entering {feature} {data_file}')
+            estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+'.pkl'
+            if os.path.exists(estimator_filepath):
+                logger.info('File already exists. Not processing.')
+                logger.info(f'exiting {feature} {data_file}')
+            else:
+                data_filepath = BASE_DATA_DIR+feature+'/'+data_file+'.npz'
                 X = sp.sparse.load_npz(data_filepath)
                 y = LABELS
                 logger.info(f'loaded: {data_filepath}')
@@ -71,90 +128,40 @@ for feature in FEATURE_TYPES:
                 skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
                 clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
                 scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
-                estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+value+'.pkl'
+
                 with open(estimator_filepath, 'wb') as f:
                     pickle.dump(scores, f)
+                    logger.info(f'saving estumator file with path: {estimator_filepath}')
                 f.close()
+                logger.info(f'results for: {feature} {data_file} {value}')
+                logger.info(f'f1 scores: {scores['test_f1_macro']}')
+                logger.info(f'precision: {scores['test_precision_macro']}')
+                logger.info(f'recall: {scores['test_recall_macro']}')
+                logger.info(f'accuracy: {scores['test_accuracy']}')
+                logger.info(f'fit time: {scores['fit_time']}')
+
+                del clf
+                for i in range(0,4):
+                    logger.info(f'generating confusion matrix {i} of 4 (total:5)')
+                    clf = scores['estimator'][i]
+                    X_ind = scores['indices']['test']
+                    X_tmp = [X[j] for j in X_ind]
+                    y_tmp =  [y[j] for j in X_ind]
+                    predictions = clf.predict(X_tmp)
+                    cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
+                    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                    disp.plot()
+                    plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+'.svg'
+                    disp.figure_.savefig(plot_estimator_filepath)
+                    logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
+                    logger.info(f'generation of confusion matrix {i} of 4 (total:5) complete')
                 del skf
                 del clf
                 del scores
                 del X
                 logger.info(f'exiting {feature} {data_file} {value}') 
-        else:
-            logger.info(f'entering {feature} {data_file}')
-            data_filepath = BASE_DATA_DIR+feature+'/'+data_file+'.npz'
-            X = sp.sparse.load_npz(data_filepath)
-            y = LABELS
-            logger.info(f'loaded: {data_filepath}')
-            scaler = MaxAbsScaler()
-            scaler.fit(X)
-            X = scaler.transform(X)
-            skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-            clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
-            scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
-            estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+'.pkl'
-            with open(estimator_filepath, 'wb') as f:
-                pickle.dump(scores, f)
-            f.close()
-            del skf
-            del clf
-            del scores
-            del X
-            logger.info(f'exiting {feature} {data_file}')
 
 logger.INFO('-----END OF RUN ------') 
-
-
-
-
-
-
-
-#feature path names
-#save confusion matrices
-#save estimators
-#log acc, prec, recall, F1.
-
-features = sp.sparse.load_npz(data_filepath)
-
-X = features
-y = labels
-print(X[0])
-print(y[0])
-print(X.shape)
-print(len(y))
-
-scaler = MaxAbsScaler()
-scaler.fit(X)
-X = scaler.transform(X)
-
-
-
-
-
-
-print(f"The test score for the 5 Stratified K Fold is: {scores['test_score']}")
-with open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/estimators/data_lemmatize_stopwords_spellcheckFalse_estimators.pkl', 'wb') as f:
-    pickle.dump(scores, f)
-    f.close()
-
-
-
-
-# print('data loaded, beginning classification')
-# clf = LogisticRegressionCV(cv=5, random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial').fit(X,y)
-# print('doing a prediction')
-# clf.predict(X)
-# print('doing a scoreing')
-# clf.score(X,y)
-# print('the end')
-
-#KFOLD-5
-#FIT-TEST-STATS
-#CM of best performing fold.
-#log it
-#time it
-#track memory
 
 #k-fold
 #MaxAbsScalerTest
