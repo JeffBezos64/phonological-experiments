@@ -99,11 +99,11 @@ for feature in FEATURE_TYPES:
                         X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
-                        cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
-                        disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                        disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_],values_format='d', normalize='all')
+                        disp.plot()
+                        disp.ax_.set_title(f'Confusion Matrix for Fold {i+1} of {feature}-{data_file}-{value}')
                         disp.figure_.setfigwidth(50)
                         disp.figure_.setfigheight(50)
-                        disp.plot()
                         plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+str(i)+'estimator'+data_file+value+'.svg'
                         disp.figure_.savefig(plot_estimator_filepath)
                         logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
@@ -151,8 +151,8 @@ for feature in FEATURE_TYPES:
                     y_tmp =  [y[j] for j in X_ind]
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
-                    cm = confusion_matrix(y_tmp, predictions, labels=clf.classes_)
-                    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=[label2language[label] for label in clf.classes_])
+                    disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_],values_format='d', normalize='all')
+                    disp.ax_.set_title(f'Confusion Matrix for Fold {i+1} of {feature}-{data_file}')
                     disp.plot()
                     disp.figure_.setfigwidth(50)
                     disp.figure_.setfigheight(50)
