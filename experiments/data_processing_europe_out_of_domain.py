@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_GloveFastText_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_ParrishSharma_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 #default is data_processing.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -52,11 +52,11 @@ import tracemalloc
 
 
 
-process_parrish = False
-process_sharma = False
+process_parrish = True
+process_sharma = True
 process_zouhar = False
-process_fasttext = True
-process_glove = True
+process_fasttext = False
+process_glove = False
 record_performance_data = True
 BASE_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
 
@@ -215,7 +215,7 @@ if process_parrish == True:
         ParrishFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderFalse)
         t2 = time.perf_counter()
         logger.info(f'ParrishEmbedderFalse {file} init time {t2 - t1}')
-        tfidf = ParrishFeatureExtractorTrue.fit(fit_data_df[file],labels)
+        tfidf = ParrishFeatureExtractorFalse.fit(fit_data_df[file],labels)
         ParrishFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderFalse, vectorizer=tfidf)
         transformed_data_matrix = ParrishFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
         t3 = time.perf_counter()
