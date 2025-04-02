@@ -168,9 +168,4 @@ for feature in FEATURE_TYPES:
                 del X
                 logger.info(f'exiting {feature} {data_file} {value}') 
 
-logger.INFO('-----END OF RUN ------')   
-
-#k-fold
-#MaxAbsScalerTest
-#[0.58201493, 0.58708955, 0.58813433, 0.592238, 0.58597015]
-#[0.05529851, 0.05529851, 0.05537313, 0.055373, 0.05529851]              
+logger.info('-----END OF RUN ------')           
