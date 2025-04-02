@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_ParrishSharma_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_GloveFastText_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 #default is data_processing.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -52,11 +52,11 @@ import tracemalloc
 
 
 
-process_parrish = True
-process_sharma = True
+process_parrish = False
+process_sharma = False
 process_zouhar = False
-process_fasttext = False
-process_glove = False
+process_fasttext = True
+process_glove = True
 record_performance_data = True
 BASE_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
 
@@ -177,31 +177,34 @@ if process_parrish == True:
     for file in data_filenames:
             fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
             OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-            if record_performance_data == True:
-                tracemalloc.start()
-            t1 = time.perf_counter()
-            ParrishFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderTrue, vectorizer=None)
-            t2 = time.perf_counter()
-            logger.info(f'ParrishEmbedderTrue {file} init time {t2 - t1}')
-            tfidf = ParrishFeatureExtractorTrue.fit(fit_data_df[file],labels)
-            ParrishFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderTrue, vectorizer=tfidf)
-            transformed_data_matrix = ParrishFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
-            t3 = time.perf_counter()
-            if record_performance_data == True:
-                current, peak = tracemalloc.get_traced_memory()
-                tracemalloc.stop()
-                logger.info(f'ParrishEmbedderTrue {file} max memory: {peak}')
-                del current
-                del peak
-            logger.info(f'ParrishEmbedderTrue {file} feature extraction time: {t3 - t2}')
-            sp.sparse.save_npz(BASE_DIR+'Parrish/'+str(file)+'True'+'.npz', transformed_data_matrix)
-            del ParrishFeatureExtractorTrue
-            del transformed_data_matrix
-            del fit_data_df
-            del OOD_data_df
-            del t1
-            del t2
-            del t3
+            if os.path.exists(BASE_DIR+'Parrish/'+str(file)+'True'+'.npz'):
+                logger.info(f' {file} file exists: skipping')
+            else:
+                if record_performance_data == True:
+                    tracemalloc.start()
+                t1 = time.perf_counter()
+                ParrishFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderTrue, vectorizer=None)
+                t2 = time.perf_counter()
+                logger.info(f'ParrishEmbedderTrue {file} init time {t2 - t1}')
+                tfidf = ParrishFeatureExtractorTrue.fit(fit_data_df[file],labels)
+                ParrishFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderTrue, vectorizer=tfidf)
+                transformed_data_matrix = ParrishFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
+                t3 = time.perf_counter()
+                if record_performance_data == True:
+                    current, peak = tracemalloc.get_traced_memory()
+                    tracemalloc.stop()
+                    logger.info(f'ParrishEmbedderTrue {file} max memory: {peak}')
+                    del current
+                    del peak
+                logger.info(f'ParrishEmbedderTrue {file} feature extraction time: {t3 - t2}')
+                sp.sparse.save_npz(BASE_DIR+'Parrish/'+str(file)+'True'+'.npz', transformed_data_matrix)
+                del ParrishFeatureExtractorTrue
+                del transformed_data_matrix
+                del fit_data_df
+                del OOD_data_df
+                del t1
+                del t2
+                del t3
 
 
     ParrishEmbedderFalse = Parrish(filepath='/csse/research/NativeLanguageID/mthesis-phonological/parrish-embedding-project/models/cmudict-0.7b-simvecs', OOVRandom=False)
@@ -209,31 +212,34 @@ if process_parrish == True:
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
+        if os.path.exists(BASE_DIR+'Parrish/'+str(file)+'False'+'.npz'):
+            logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
             t1 = time.perf_counter()
-        ParrishFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderFalse)
-        t2 = time.perf_counter()
-        logger.info(f'ParrishEmbedderFalse {file} init time {t2 - t1}')
-        tfidf = ParrishFeatureExtractorFalse.fit(fit_data_df[file],labels)
-        ParrishFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderFalse, vectorizer=tfidf)
-        transformed_data_matrix = ParrishFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'ParrishEmbedderFalse {file} max memory: {peak}')
-            del current
-            del peak
-        logger.info(f'ParrishEmbedderFalse {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Parrish/'+str(file)+'False'+'.npz', transformed_data_matrix) 
-        del ParrishFeatureExtractorFalse
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df
-        del t1
-        del t2
-        del t3
+            ParrishFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderFalse)
+            t2 = time.perf_counter()
+            logger.info(f'ParrishEmbedderFalse {file} init time {t2 - t1}')
+            tfidf = ParrishFeatureExtractorFalse.fit(fit_data_df[file],labels)
+            ParrishFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(ParrishEmbedderFalse, vectorizer=tfidf)
+            transformed_data_matrix = ParrishFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'ParrishEmbedderFalse {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'ParrishEmbedderFalse {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'Parrish/'+str(file)+'False'+'.npz', transformed_data_matrix) 
+            del ParrishFeatureExtractorFalse
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df
+            del t1
+            del t2
+            del t3
 
 
 
@@ -244,31 +250,34 @@ if process_sharma == True:
     for file in data_filenames:  
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter()
-        SharmaFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderTrue, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'SharmaEmbedderTrue {file} init time {t2 - t1}')
-        tfidf = SharmaFeatureExtractorTrue.fit(fit_data_df[file],labels)
-        SharmaFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderTrue, vectorizer=tfidf)
-        transformed_data_matrix = SharmaFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'SharmaEmbedderTrue {file} max memory: {peak}')
-            del current
-            del peak 
-        logger.info(f'SharmaEmbedderTrue {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Sharma/'+str(file)+'True'+'.npz', transformed_data_matrix)
-        del SharmaFeatureExtractorTrue
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Sharma/'+str(file)+'True'+'.npz'):
+            logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter()
+            SharmaFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderTrue, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'SharmaEmbedderTrue {file} init time {t2 - t1}')
+            tfidf = SharmaFeatureExtractorTrue.fit(fit_data_df[file],labels)
+            SharmaFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderTrue, vectorizer=tfidf)
+            transformed_data_matrix = SharmaFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+           if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'SharmaEmbedderTrue {file} max memory: {peak}')
+                del current
+                del peak 
+            logger.info(f'SharmaEmbedderTrue {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'Sharma/'+str(file)+'True'+'.npz', transformed_data_matrix)
+            del SharmaFeatureExtractorTrue
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df
+            del t1
+            del t2
+            del t3
 
 
     SharmaEmbedderFalse = Sharma(filepath='/csse/research/NativeLanguageID/mthesis-phonological/sharma-embedding-project/models/simvecs', OOVRandom=False)
@@ -276,31 +285,34 @@ if process_sharma == True:
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter()
-        SharmaFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderFalse, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'SharmaEmbedderFalse {file} init time {t2 - t1}')
-        tfidf = SharmaFeatureExtractorFalse.fit(fit_data_df[file],labels)
-        SharmaFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderFalse, vectorizer=tfidf)
-        transformed_data_matrix = SharmaFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'SharmaEmbedderFalse {file} max memory: {peak}')
-            del current
-            del peak  
-        logger.info(f'SharmaEmbedderFalse {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Sharma/'+str(file)+'False'+'.npz', transformed_data_matrix) 
-        del SharmaFeatureExtractorFalse
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df        
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Sharma/'+str(file)+'False'+'.npz'):
+            logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter()
+            SharmaFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderFalse, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'SharmaEmbedderFalse {file} init time {t2 - t1}')
+            tfidf = SharmaFeatureExtractorFalse.fit(fit_data_df[file],labels)
+            SharmaFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderFalse, vectorizer=tfidf)
+            transformed_data_matrix = SharmaFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'SharmaEmbedderFalse {file} max memory: {peak}')
+                del current
+                del peak  
+            logger.info(f'SharmaEmbedderFalse {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'Sharma/'+str(file)+'False'+'.npz', transformed_data_matrix) 
+            del SharmaFeatureExtractorFalse
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df        
+            del t1
+            del t2
+            del t3
 
 
 
@@ -310,31 +322,34 @@ if process_zouhar == True:
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter() 
-        ZouharFeatureExtractor = NonGenSimMeanTfidfEmbeddingVectorizer(ZouharEmbedder, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'ZouharEmbedder {file} init time {t2 - t1}')
-        tfidf = ZouharFeatureExtractor.fit(fit_data_df[file],labels)
-        ZouharFeatureExtractor = NonGenSimMeanTfidfEmbeddingVectorizer(ZouharEmbedder, vectorizer=tfidf)
-        transformed_data_matrix = ZouharFeatureExtractor.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'ZouharEmbedder {file} max memory: {peak}')
-            del current
-            del peak
-        logger.info(f'ZouharEmbedder {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Zouhar/'+str(file)+'.npz', transformed_data_matrix)
-        del ZouharFeatureExtractor
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df 
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Zouhar/'+str(file)+'.npz'):
+            logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter() 
+            ZouharFeatureExtractor = NonGenSimMeanTfidfEmbeddingVectorizer(ZouharEmbedder, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'ZouharEmbedder {file} init time {t2 - t1}')
+            tfidf = ZouharFeatureExtractor.fit(fit_data_df[file],labels)
+            ZouharFeatureExtractor = NonGenSimMeanTfidfEmbeddingVectorizer(ZouharEmbedder, vectorizer=tfidf)
+            transformed_data_matrix = ZouharFeatureExtractor.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'ZouharEmbedder {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'ZouharEmbedder {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'Zouhar/'+str(file)+'.npz', transformed_data_matrix)
+            del ZouharFeatureExtractor
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df 
+            del t1
+            del t2
+            del t3
 
 
 if process_glove == True:
@@ -344,62 +359,68 @@ if process_glove == True:
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter() 
-        GloveFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderTrue, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'GloveEmbedderTrue {file} init time {t2 - t1}')
-        tfidf = GloveFeatureExtractorTrue.fit(fit_data_df[file],labels)
-        GloveFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderTrue, vectorizer=tfidf)
-        transformed_data_matrix = GloveFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'GloveEmbedderTrue {file} max memory: {peak}')
-            del current
-            del peak
-        logger.info(f'GloveEmbedderTrue {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Glove/'+str(file)+'True'+'.npz', transformed_data_matrix)
-        del GloveFeatureExtractorTrue
-        del transformed_data_matrix 
-        del fit_data_df
-        del OOD_data_df
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Glove/'+str(file)+'True'+'.npz'):
+                logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter() 
+            GloveFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderTrue, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'GloveEmbedderTrue {file} init time {t2 - t1}')
+            tfidf = GloveFeatureExtractorTrue.fit(fit_data_df[file],labels)
+            GloveFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderTrue, vectorizer=tfidf)
+            transformed_data_matrix = GloveFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'GloveEmbedderTrue {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'GloveEmbedderTrue {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'Glove/'+str(file)+'True'+'.npz', transformed_data_matrix)
+            del GloveFeatureExtractorTrue
+            del transformed_data_matrix 
+            del fit_data_df
+            del OOD_data_df
+            del t1
+            del t2
+            del t3
 
 
     GloveEmbedderFalse = GensimEmbed(model=glove_vectors, OOVRandom=False)
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter() 
-        GloveFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderFalse, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'GloveEmbedderFalse {file} init time {t2 - t1}')
-        tfidf = GloveFeatureExtractorFalse.fit(fit_data_df[file],labels)
-        GloveFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderFalse, vectorizer=tfidf)
-        transformed_data_matrix = GloveFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'GloveEmbedderFalse {file} max memory: {peak}')
-            del current
-            del peak
-        logger.info(f'GloveEmbedderFalse {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'Glove/'+str(file)+'False'+'.npz', transformed_data_matrix) 
-        del GloveFeatureExtractorFalse
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Glove/'+str(file)+'True'+'.npz'):
+             logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter() 
+            GloveFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderFalse, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'GloveEmbedderFalse {file} init time {t2 - t1}')
+            tfidf = GloveFeatureExtractorFalse.fit(fit_data_df[file],labels)
+            GloveFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(GloveEmbedderFalse, vectorizer=tfidf)
+            transformed_data_matrix = GloveFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'GloveEmbedderFalse {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'GloveEmbedderFalse {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'Glove/'+str(file)+'False'+'.npz', transformed_data_matrix) 
+            del GloveFeatureExtractorFalse
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df
+            del t1
+            del t2
+            del t3
 
 
 
@@ -410,31 +431,34 @@ if process_fasttext == True:
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter() 
-        FastTextFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderTrue, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'FastTextEmbedderTrue {file} init time {t2 - t1}')
-        tfidf = FastTextFeatureExtractorTrue.fit(fit_data_df[file],labels)
-        FastTextFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderTrue, vectorizer=tfidf)
-        transformed_data_matrix = FastTextFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'FastTextEmbedderTrue {file} max memory: {peak}')
-            del current
-            del peak
-        logger.info(f'FastTextEmbedderTrue {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'FastText/'+str(file)+'True'+'.npz', transformed_data_matrix)
-        del FastTextFeatureExtractorTrue
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df 
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Parrish/'+str(file)+'True'+'.npz'):
+            logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter() 
+            FastTextFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderTrue, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'FastTextEmbedderTrue {file} init time {t2 - t1}')
+            tfidf = FastTextFeatureExtractorTrue.fit(fit_data_df[file],labels)
+            FastTextFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderTrue, vectorizer=tfidf)
+            transformed_data_matrix = FastTextFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'FastTextEmbedderTrue {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'FastTextEmbedderTrue {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'FastText/'+str(file)+'True'+'.npz', transformed_data_matrix)
+            del FastTextFeatureExtractorTrue
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df 
+            del t1
+            del t2
+            del t3
   
 
    
@@ -442,30 +466,33 @@ if process_fasttext == True:
     for file in data_filenames:
         fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
         OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
-        if record_performance_data == True:
-            tracemalloc.start()
-        t1 = time.perf_counter() 
-        FastTextFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderFalse, vectorizer=None)
-        t2 = time.perf_counter()
-        logger.info(f'FastTextEmbedderFalse {file} init time {t2 - t1}')
-        tfidf = FastTextFeatureExtractorFalse.fit(fit_data_df[file],labels)
-        FastTextFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderFalse, vectorizer=tfidf)
-        transformed_data_matrix = FastTextFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
-        t3 = time.perf_counter()
-        if record_performance_data == True:
-            current, peak = tracemalloc.get_traced_memory()
-            tracemalloc.stop()
-            logger.info(f'FastTextEmbedderFalse {file} max memory: {peak}')
-            del current
-            del peak
-        logger.info(f'FastTextEmbedderFalse {file} feature extraction time: {t3 - t2}')
-        sp.sparse.save_npz(BASE_DIR+'FastText/'+str(file)+'False'+'.npz', transformed_data_matrix) 
-        del FastTextFeatureExtractorFalse
-        del transformed_data_matrix
-        del fit_data_df
-        del OOD_data_df
-        del t1
-        del t2
-        del t3
+        if os.path.exists(BASE_DIR+'Parrish/'+str(file)+'True'+'.npz'):
+            logger.info(f' {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter() 
+            FastTextFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderFalse, vectorizer=None)
+            t2 = time.perf_counter()
+            logger.info(f'FastTextEmbedderFalse {file} init time {t2 - t1}')
+            tfidf = FastTextFeatureExtractorFalse.fit(fit_data_df[file],labels)
+            FastTextFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderFalse, vectorizer=tfidf)
+            transformed_data_matrix = FastTextFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'FastTextEmbedderFalse {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'FastTextEmbedderFalse {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'FastText/'+str(file)+'False'+'.npz', transformed_data_matrix) 
+            del FastTextFeatureExtractorFalse
+            del transformed_data_matrix
+            del fit_data_df
+            del OOD_data_df
+            del t1
+            del t2
+            del t3
 
 logger.info(f'----END OF RUN----')
