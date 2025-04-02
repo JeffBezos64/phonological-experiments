@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/experiment.log', encoding='utf-8', level=logging.INFO, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/experimentOOD.log', encoding='utf-8', level=logging.INFO, format='%(asctime)s %(message)s')
 #default is experiment.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
