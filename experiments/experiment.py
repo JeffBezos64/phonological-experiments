@@ -99,11 +99,12 @@ for feature in FEATURE_TYPES:
                         X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
                         y_tmp =  [y[j] for j in X_ind]
                         predictions = clf.predict(X_tmp)
-                        disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_])
+                        disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
                         disp.plot()
-                        disp.ax_.set_title(f'Confusion Matrix for Fold {i+1} of {feature}-{data_file}-{value}')
-                        disp.figure_.set_figwidth(10)
-                        disp.figure_.set_figheight(10)
+                        disp.ax_.set_title(f'{feature} Confusion Matrix')
+                        disp.ax_.tick_params(labelrotation=90, axis='x')
+                        disp.figure_.set_figwidth(11)
+                        disp.figure_.set_figheight(11)
                         plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+f'{i+1}'+'estimator'+data_file+value+'.svg'
                         disp.figure_.savefig(plot_estimator_filepath)
                         logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
@@ -151,11 +152,12 @@ for feature in FEATURE_TYPES:
                     y_tmp =  [y[j] for j in X_ind]
                     y_tmp =  [y[j] for j in X_ind]
                     predictions = clf.predict(X_tmp)
-                    disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_])
-                    disp.ax_.set_title(f'Confusion Matrix for Fold {i+1} of {feature}-{data_file}')
+                    disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_],xticks_rotation=90, colorbar=False)
+                    disp.ax_.set_title(f'{feature} Confusion Matrix')
                     disp.plot()
-                    disp.figure_.set_figwidth(10)
-                    disp.figure_.set_figheight(10)
+                    disp.ax_.tick_params(labelrotation=90, axis='x')
+                    disp.figure_.set_figwidth(11)
+                    disp.figure_.set_figheight(11)
                     plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+f'{i+1}'+'estimator'+data_file+'.svg'
                     disp.figure_.savefig(plot_estimator_filepath)
                     logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
@@ -166,7 +168,7 @@ for feature in FEATURE_TYPES:
                 del X
                 logger.info(f'exiting {feature} {data_file} {value}') 
 
-logger.INFO('-----END OF RUN ------') 
+logger.INFO('-----END OF RUN ------')   
 
 #k-fold
 #MaxAbsScalerTest
