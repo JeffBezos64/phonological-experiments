@@ -1,3 +1,4 @@
 pickles/
 data/
 *.log
+*.log.old
