@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_GloveFastText_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 #default is data_processing.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -55,8 +55,8 @@ import tracemalloc
 process_parrish = False
 process_sharma = False
 process_zouhar = False
-process_fasttext = False
-process_glove = False
+process_fasttext = True
+process_glove = True
 record_performance_data = True
 BASE_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
 
@@ -197,7 +197,8 @@ if process_parrish == True:
             sp.sparse.save_npz(BASE_DIR+'Parrish/'+str(file)+'True'+'.npz', transformed_data_matrix)
             del ParrishFeatureExtractorTrue
             del transformed_data_matrix
-            del data_df
+            del fit_data_df
+            del OOD_data_df
             del t1
             del t2
             del t3
@@ -228,7 +229,8 @@ if process_parrish == True:
         sp.sparse.save_npz(BASE_DIR+'Parrish/'+str(file)+'False'+'.npz', transformed_data_matrix) 
         del ParrishFeatureExtractorFalse
         del transformed_data_matrix
-        del data_df
+        del fit_data_df
+        del OOD_data_df
         del t1
         del t2
         del t3
@@ -262,7 +264,8 @@ if process_sharma == True:
         sp.sparse.save_npz(BASE_DIR+'Sharma/'+str(file)+'True'+'.npz', transformed_data_matrix)
         del SharmaFeatureExtractorTrue
         del transformed_data_matrix
-        del data_df
+        del fit_data_df
+        del OOD_data_df
         del t1
         del t2
         del t3
@@ -293,7 +296,8 @@ if process_sharma == True:
         sp.sparse.save_npz(BASE_DIR+'Sharma/'+str(file)+'False'+'.npz', transformed_data_matrix) 
         del SharmaFeatureExtractorFalse
         del transformed_data_matrix
-        del data_df        
+        del fit_data_df
+        del OOD_data_df        
         del t1
         del t2
         del t3
@@ -326,7 +330,8 @@ if process_zouhar == True:
         sp.sparse.save_npz(BASE_DIR+'Zouhar/'+str(file)+'.npz', transformed_data_matrix)
         del ZouharFeatureExtractor
         del transformed_data_matrix
-        del data_df 
+        del fit_data_df
+        del OOD_data_df 
         del t1
         del t2
         del t3
@@ -359,7 +364,8 @@ if process_glove == True:
         sp.sparse.save_npz(BASE_DIR+'Glove/'+str(file)+'True'+'.npz', transformed_data_matrix)
         del GloveFeatureExtractorTrue
         del transformed_data_matrix 
-        del data_df
+        del fit_data_df
+        del OOD_data_df
         del t1
         del t2
         del t3
@@ -389,7 +395,8 @@ if process_glove == True:
         sp.sparse.save_npz(BASE_DIR+'Glove/'+str(file)+'False'+'.npz', transformed_data_matrix) 
         del GloveFeatureExtractorFalse
         del transformed_data_matrix
-        del data_df
+        del fit_data_df
+        del OOD_data_df
         del t1
         del t2
         del t3
@@ -423,7 +430,8 @@ if process_fasttext == True:
         sp.sparse.save_npz(BASE_DIR+'FastText/'+str(file)+'True'+'.npz', transformed_data_matrix)
         del FastTextFeatureExtractorTrue
         del transformed_data_matrix
-        del data_df 
+        del fit_data_df
+        del OOD_data_df 
         del t1
         del t2
         del t3
@@ -454,7 +462,8 @@ if process_fasttext == True:
         sp.sparse.save_npz(BASE_DIR+'FastText/'+str(file)+'False'+'.npz', transformed_data_matrix) 
         del FastTextFeatureExtractorFalse
         del transformed_data_matrix
-        del data_df
+        del fit_data_df
+        del OOD_data_df
         del t1
         del t2
         del t3
