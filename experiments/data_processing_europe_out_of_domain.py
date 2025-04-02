@@ -448,7 +448,7 @@ if process_fasttext == True:
         FastTextFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderFalse, vectorizer=None)
         t2 = time.perf_counter()
         logger.info(f'FastTextEmbedderFalse {file} init time {t2 - t1}')
-        tfidf = FastTextFeatureExtractorFalse.fit_transform(fit_data_df[file],labels)
+        tfidf = FastTextFeatureExtractorFalse.fit(fit_data_df[file],labels)
         FastTextFeatureExtractorFalse = NonGenSimMeanTfidfEmbeddingVectorizer(FastTextEmbedderFalse, vectorizer=tfidf)
         transformed_data_matrix = FastTextFeatureExtractorFalse.fit_transform(OOD_data_df[file], labels)
         t3 = time.perf_counter()
