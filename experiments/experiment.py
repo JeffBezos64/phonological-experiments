@@ -28,7 +28,7 @@ language2label = {
     'Croatian': 3,
     'Czech': 4,
     'Estonian': 5,
-    'Finish': 6,
+    'Finnish': 6,
     'French': 7,
     'Greek': 8,
     'Hungarian': 9,
