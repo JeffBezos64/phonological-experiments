@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_GloveFastText_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/OOD_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 #default is data_processing.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -52,9 +52,9 @@ import tracemalloc
 
 
 
-process_parrish = False
-process_sharma = False
-process_zouhar = False
+process_parrish = True
+process_sharma = True
+process_zouhar = True
 process_fasttext = True
 process_glove = True
 record_performance_data = True
@@ -263,7 +263,7 @@ if process_sharma == True:
             SharmaFeatureExtractorTrue = NonGenSimMeanTfidfEmbeddingVectorizer(SharmaEmbedderTrue, vectorizer=tfidf)
             transformed_data_matrix = SharmaFeatureExtractorTrue.fit_transform(OOD_data_df[file], labels)
             t3 = time.perf_counter()
-           if record_performance_data == True:
+            if record_performance_data == True:
                 current, peak = tracemalloc.get_traced_memory()
                 tracemalloc.stop()
                 logger.info(f'SharmaEmbedderTrue {file} max memory: {peak}')
