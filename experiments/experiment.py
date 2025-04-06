@@ -86,6 +86,8 @@ for feature in FEATURE_TYPES:
                         logger.info(f'saving estumator file with path: {estimator_filepath}')
                     f.close()
                     results_dict = defaultdict(dict)
+                    results_dict[feature] = {}
+                    results_dict[feature][data_file] = defaultdict(dict)
                     logger.info(f'results for: {feature} {data_file} {value}')
                     logger.info(f'f1 scores: {scores['test_f1_macro']}')
                     results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
@@ -150,6 +152,8 @@ for feature in FEATURE_TYPES:
                     logger.info(f'saving estumator file with path: {estimator_filepath}')
                 f.close()
                 results_dict = defaultdict(dict)
+                results_dict[feature] = {}
+                results_dict[feature][data_file] = defaultdict(dict)
                 logger.info(f'results for: {feature} {data_file} ')
                 logger.info(f'f1 scores: {scores['test_f1_macro']}')
                 results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
