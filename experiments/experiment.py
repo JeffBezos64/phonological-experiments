@@ -84,12 +84,24 @@ for feature in FEATURE_TYPES:
                         pickle.dump(scores, f)
                         logger.info(f'saving estumator file with path: {estimator_filepath}')
                     f.close()
+                    results_dict = {}
                     logger.info(f'results for: {feature} {data_file} {value}')
                     logger.info(f'f1 scores: {scores['test_f1_macro']}')
+                    results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
                     logger.info(f'precision: {scores['test_precision_macro']}')
+                    results_dict[feature][data_file]['precision_macro'] = scores['test_precision_macro']
                     logger.info(f'recall: {scores['test_recall_macro']}')
+                    results_dict[feature][data_file]['recall_macro'] = scores['test_recall_macro']
                     logger.info(f'accuracy: {scores['test_accuracy']}')
+                    results_dict[feature][data_file]['accuracy'] = scores['test_accuracy']
                     logger.info(f'fit time: {scores['fit_time']}')
+                    results_dict[feature][data_file]['fit_time'] = scores['fit_time']
+                    results_filepath = BASE_DATA_DIR+feature+'/'+'results'+data_file+value+'.pkl'
+                    with open(results_filepath, 'wb') as f:
+                        pickle.dump(results_dict, f)
+                        logger.info(f'saving results file with path: {results_filepath}')
+                    f.close()
+                    del results_dict
 
                     del clf
                     for i in range(0,5):
@@ -136,12 +148,24 @@ for feature in FEATURE_TYPES:
                     pickle.dump(scores, f)
                     logger.info(f'saving estumator file with path: {estimator_filepath}')
                 f.close()
+                results_dict = {}
                 logger.info(f'results for: {feature} {data_file} ')
                 logger.info(f'f1 scores: {scores['test_f1_macro']}')
+                results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
                 logger.info(f'precision: {scores['test_precision_macro']}')
+                results_dict[feature][data_file]['precision_macro'] = scores['test_precision_macro']
                 logger.info(f'recall: {scores['test_recall_macro']}')
+                results_dict[feature][data_file]['recall_macro'] = scores['test_recall_macro']
                 logger.info(f'accuracy: {scores['test_accuracy']}')
+                results_dict[feature][data_file]['accuracy'] = scores['test_accuracy']
                 logger.info(f'fit time: {scores['fit_time']}')
+                results_dict[feature][data_file]['fit_time'] = scores['fit_time']
+                results_filepath = BASE_DATA_DIR+feature+'/'+'results'+data_file+'.pkl'
+                with open(results_filepath, 'wb') as f:
+                    pickle.dump(results_dict, f)
+                    logger.info(f'saving results file with path: {results_filepath}')
+                    f.close()
+                del results_dict
 
                 del clf
                 for i in range(0,4):
@@ -166,6 +190,6 @@ for feature in FEATURE_TYPES:
                 del clf
                 del scores
                 del X
-                logger.info(f'exiting {feature} {data_file} {value}') 
+                logger.info(f'exiting {feature} {data_file}') 
 
 logger.info('-----END OF RUN ------') 
