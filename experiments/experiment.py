@@ -12,6 +12,7 @@ from sklearn.preprocessing import MaxAbsScaler
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from collections import defaultdict
 import time
 import logging
 import os
@@ -84,7 +85,7 @@ for feature in FEATURE_TYPES:
                         pickle.dump(scores, f)
                         logger.info(f'saving estumator file with path: {estimator_filepath}')
                     f.close()
-                    results_dict = {}
+                    results_dict = defaultdict(dict)
                     logger.info(f'results for: {feature} {data_file} {value}')
                     logger.info(f'f1 scores: {scores['test_f1_macro']}')
                     results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
@@ -148,7 +149,7 @@ for feature in FEATURE_TYPES:
                     pickle.dump(scores, f)
                     logger.info(f'saving estumator file with path: {estimator_filepath}')
                 f.close()
-                results_dict = {}
+                results_dict = defaultdict(dict)
                 logger.info(f'results for: {feature} {data_file} ')
                 logger.info(f'f1 scores: {scores['test_f1_macro']}')
                 results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
