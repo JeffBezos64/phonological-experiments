@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/Zouhar_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
+logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/tfidf_data_processing.log', encoding='utf-8', level=logging.DEBUG, format='%(asctime)s %(message)s')
 #default is data_processing.log
 logger.setLevel(logging.DEBUG)
 logger.info('----NEW RUN----')
@@ -57,11 +57,12 @@ process_sharma = False
 process_zouhar = False
 process_fasttext = False
 process_glove = False
+process_tfidf = True
 record_performance_data = True
 BASE_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'
 
 if os.path.exists('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/data_tokenize.pkl'):
-    logger.info('data is present not processing.')
+    logger.info('preprocessed data is present not processing. - moving to Repr specific steps.')
 else:
     logger.info('building experiment dataset')
     data = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/seed_42/full_out_of_domain_experiment_dataframe_clean_chunks.pkl', 'rb')).text.values.tolist()
@@ -429,6 +430,33 @@ if process_fasttext == True:
         del FastTextFeatureExtractorFalse
         del transformed_data_matrix
         del data_df
+        del t1
+        del t2
+        del t3
+
+if process_tfidf == True:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    for file in data_filenames:
+        data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
+        vectorizer =  TfidfVectorizer(analyzer=lambda x: x, max_features=8192)
+        if record_performance_data == True:
+            tracemalloc.start()
+        t1 = time.perf_counter() 
+        t2 = time.perf_counter()
+        logger.info(f'tfidf vectorizer {file} init time {t2 - t1}')
+        transformed_data_matrix = vectorizer.fit_transform(data_df[file],labels)
+        t3 = time.perf_counter()
+        if record_performance_data == True:
+            current, peak = tracemalloc.get_traced_memory()
+            tracemalloc.stop()
+            logger.info(f'tfidf vectorizer {file} max memory: {peak}')
+            del current
+            del peak
+        logger.info(f'tfidf vectorizer {file} feature extraction time: {t3 - t2}')
+        sp.sparse.save_npz(BASE_DIR+'tfidf/'+str(file)+'.npz', transformed_data_matrix)
+        del vectorizer
+        del transformed_data_matrix
+        del data_df 
         del t1
         del t2
         del t3

@@ -52,11 +52,12 @@ import tracemalloc
 
 
 
-process_parrish = True
-process_sharma = True
-process_zouhar = True
-process_fasttext = True
-process_glove = True
+process_parrish = False
+process_sharma = False
+process_zouhar = False
+process_fasttext = False
+process_glove = False
+process_tfidf = True
 record_performance_data = True
 BASE_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
 
@@ -491,6 +492,40 @@ if process_fasttext == True:
             del transformed_data_matrix
             del fit_data_df
             del OOD_data_df
+            del t1
+            del t2
+            del t3
+
+
+if process_tfidf == True:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    for file in data_filenames:
+        fit_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'+ f'{file}' + ".pkl", 'rb'))
+        OOD_data_df = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'+ f'{file}' + ".pkl", 'rb'))
+        if os.path.exists(BASE_DIR+'tfidf/'+str(file)+'.npz'):
+            logger.info(f' tfidf {file} file exists: skipping')
+        else:
+            if record_performance_data == True:
+                tracemalloc.start()
+            t1 = time.perf_counter()
+            vectorizer =  TfidfVectorizer(analyzer=lambda x: x, max_features=8192)
+            vectorizer.fit(fit_data_df[file], labels)
+            t2 = time.perf_counter()
+            logger.info(f'tfidf vectorizer {file} init time {t2 - t1}')
+            transformed_data_matrix = vectorizer.transform(OOD_data_df[file],labels)
+            t3 = time.perf_counter()
+            if record_performance_data == True:
+                current, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                logger.info(f'tfidf vectorizer {file} max memory: {peak}')
+                del current
+                del peak
+            logger.info(f'tfidf vectorizer {file} feature extraction time: {t3 - t2}')
+            sp.sparse.save_npz(BASE_DIR+'tfidf/'+str(file)+'.npz', transformed_data_matrix)
+            del vectorizer
+            del transformed_data_matrix
+            del OOD_data_df 
+            del fit_data_df
             del t1
             del t2
             del t3
