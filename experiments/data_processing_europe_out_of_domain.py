@@ -512,7 +512,7 @@ if process_tfidf == True:
             vectorizer.fit(fit_data_df[file], labels)
             t2 = time.perf_counter()
             logger.info(f'tfidf vectorizer {file} init time {t2 - t1}')
-            transformed_data_matrix = vectorizer.transform(OOD_data_df[file],labels)
+            transformed_data_matrix = vectorizer.transform(OOD_data_df[file])
             t3 = time.perf_counter()
             if record_performance_data == True:
                 current, peak = tracemalloc.get_traced_memory()

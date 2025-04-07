@@ -52,7 +52,7 @@ label2language = {v: k for k, v in language2label.items()}
 SEED = 42
 
 BASE_DATA_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'
-FEATURE_TYPES = ['Parrish', 'FastText', 'Zouhar', 'Glove', 'Sharma']
+FEATURE_TYPES = ['Parrish', 'FastText', 'Zouhar', 'Glove', 'Sharma', 'tfidf']
 VALUES = ['True', 'False']
 FILENAMES = ['data_tokenize', 'data_spellcheck', 'data_spellcheck_lemmatize', 'data_spellcheck_stopwords', 'data_stopwords', 'data_lemmatize', 'data_lemmatize_stopwords', 'data_lemmatize_stopwords_spellcheck']
 LABELS = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/seed_42/full_labels_out_of_domain_experiment_dataframe_clean_chunks.pkl', 'rb')).label.values.tolist()
@@ -61,7 +61,7 @@ scoring = ['f1_macro', 'precision_macro', 'recall_macro', 'accuracy']
 
 for feature in FEATURE_TYPES:
     for data_file in FILENAMES:
-        if feature != 'Zouhar':
+        if feature != 'Zouhar' and feature != 'tfidf':
             for value in VALUES:
                 logger.info(f'entering {feature} {data_file} {value}')
                 estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+value+'.pkl'
@@ -129,7 +129,75 @@ for feature in FEATURE_TYPES:
                     del scores
                     del X
                     logger.info(f'exiting {feature} {data_file} {value}') 
-        else:
+        elif feature == 'Zouhar':
+            logger.info(f'entering {feature} {data_file}')
+            estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+'.pkl'
+            if os.path.exists(estimator_filepath):
+                logger.info('File already exists. Not processing.')
+                logger.info(f'exiting {feature} {data_file}')
+            else:
+                data_filepath = BASE_DATA_DIR+feature+'/'+data_file+'.npz'
+                X = sp.sparse.load_npz(data_filepath)
+                y = LABELS
+                logger.info(f'loaded: {data_filepath}')
+                scaler = MaxAbsScaler()
+                scaler.fit(X)
+                X = scaler.transform(X)
+                skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+                clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
+                scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
+
+                with open(estimator_filepath, 'wb') as f:
+                    pickle.dump(scores, f)
+                    logger.info(f'saving estumator file with path: {estimator_filepath}')
+                f.close()
+                results_dict = defaultdict(dict)
+                results_dict[feature] = {}
+                results_dict[feature][data_file] = defaultdict(dict)
+                logger.info(f'results for: {feature} {data_file} ')
+                logger.info(f'f1 scores: {scores['test_f1_macro']}')
+                results_dict[feature][data_file]['f1_macro'] = scores['test_f1_macro']
+                logger.info(f'precision: {scores['test_precision_macro']}')
+                results_dict[feature][data_file]['precision_macro'] = scores['test_precision_macro']
+                logger.info(f'recall: {scores['test_recall_macro']}')
+                results_dict[feature][data_file]['recall_macro'] = scores['test_recall_macro']
+                logger.info(f'accuracy: {scores['test_accuracy']}')
+                results_dict[feature][data_file]['accuracy'] = scores['test_accuracy']
+                logger.info(f'fit time: {scores['fit_time']}')
+                results_dict[feature][data_file]['fit_time'] = scores['fit_time']
+                results_filepath = BASE_DATA_DIR+feature+'/'+'results'+data_file+'.pkl'
+                with open(results_filepath, 'wb') as f:
+                    pickle.dump(results_dict, f)
+                    logger.info(f'saving results file with path: {results_filepath}')
+                    f.close()
+                del results_dict
+
+                del clf
+                for i in range(0,4):
+                    logger.info(f'generating confusion matrix {i+1} of 5 (total:5)')
+                    clf = scores['estimator'][i]
+                    X_ind = scores['indices']['test'][i]
+                    X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
+                    y_tmp =  [y[j] for j in X_ind]
+                    y_tmp =  [y[j] for j in X_ind]
+                    predictions = clf.predict(X_tmp)
+                    disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_],xticks_rotation=90, colorbar=False)
+                    disp.ax_.set_title(f'{feature} Confusion Matrix')
+                    disp.plot()
+                    disp.ax_.tick_params(labelrotation=90, axis='x')
+                    disp.figure_.set_figwidth(11)
+                    disp.figure_.set_figheight(11)
+                    plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+f'{i+1}'+'estimator'+data_file+'.svg'
+                    disp.figure_.savefig(plot_estimator_filepath)
+                    logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
+                    logger.info(f'generation of confusion matrix {i+1} of 5 (total:5) complete')
+                del skf
+                del clf
+                del scores
+                del X
+                logger.info(f'exiting {feature} {data_file}') 
+        
+        elif feature == 'tfidf':
             logger.info(f'entering {feature} {data_file}')
             estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+'.pkl'
             if os.path.exists(estimator_filepath):
