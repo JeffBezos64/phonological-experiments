@@ -132,7 +132,7 @@ for feature in FEATURE_TYPES:
 
                     logger.info(f'starting out of sample testing for {feature} {data_file} {value}')               
                     ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+value+'.npz'
-                    ood_x = sp.sparse.load(data_filepath)
+                    ood_x = sp.sparse.load_npz(data_filepath)
                     ood_y = ood_labels
                     predictions = clf.predict(ood_x)
                     logger.info(f'preparing OOS confusion matrix')
@@ -234,7 +234,7 @@ for feature in FEATURE_TYPES:
 
                 logger.info(f'starting out of sample testing for {feature} {data_file}')               
                 ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+'.npz'
-                ood_x = sp.sparse.load(data_filepath)
+                ood_x = sp.sparse.load_npz(data_filepath)
                 ood_y = ood_labels
                 predictions = clf.predict(ood_x)
                 logger.info(f'preparing OOS confusion matrix')
