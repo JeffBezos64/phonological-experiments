@@ -104,10 +104,10 @@ for feature in FEATURE_TYPES:
                     logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
                     logger.info(f'generation of confusion matrix for in-domain complete')
 
-                    accuracy = accuracy_score(y_pred=predictions, y_true=y)
-                    precision = precision_score(y_pred=predictions, y_true=y, average='macro')
-                    recall = recall_score(y_pred=predictions, y_true=y, average='macro')
-                    f1 = f1_score(y_pred=predictions, y_true=y, average='macro')
+                    accuracy = accuracy_score(y_pred=predictions, y_true=y_test)
+                    precision = precision_score(y_pred=predictions, y_true=y_test, average='macro')
+                    recall = recall_score(y_pred=predictions, y_true=y_test, average='macro')
+                    f1 = f1_score(y_pred=predictions, y_true=y_test, average='macro')
 
                     logger.info(f'{feature}{data_file}{value} accuracy - in domain sample: {accuracy}')
                     logger.info(f'{feature}{data_file}{value} precision - in domain sample: {precision}')
@@ -167,7 +167,7 @@ for feature in FEATURE_TYPES:
                     OOD_results_dict[feature][data_file][value]['accuracy'] = accuracy
                     OOD_results_dict[feature][data_file][value]['fit_time'] = None
                     OOD_results_filepath = OOD_DATA_DIR+feature+'/'+'results'+data_file+value+'.pkl'
-                    with open(results_filepath, 'wb') as f:
+                    with open(OOD_results_filepath, 'wb') as f:
                         pickle.dump(OOD_results_dict, f)
                         logger.info(f'saving results file with path: {results_filepath}')
                     f.close()
@@ -182,7 +182,7 @@ for feature in FEATURE_TYPES:
                 logger.info(f'exiting {feature} {data_file}')
             else:
                 logger.info(f'starting in sample work for {feature} {data_file}')
-                data_filepath = BASE_DATA_DIR+feature+'/'+data_file+value+'.npz'
+                data_filepath = BASE_DATA_DIR+feature+'/'+data_file+'.npz'
                 X = sp.sparse.load_npz(data_filepath)
                 y = LABELS
                 logger.info(f'loaded: {data_filepath}')
@@ -206,10 +206,10 @@ for feature in FEATURE_TYPES:
                 logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
                 logger.info(f'generation of confusion matrix for in-domain complete')
 
-                accuracy = accuracy_score(y_pred=predictions, y_true=y)
-                precision = precision_score(y_pred=predictions, y_true=y, average='macro')
-                recall = recall_score(y_pred=predictions, y_true=y, average='macro')
-                f1 = f1_score(y_pred=predictions, y_true=y, average='macro')
+                accuracy = accuracy_score(y_pred=predictions, y_true=y_test)
+                precision = precision_score(y_pred=predictions, y_true=y_test, average='macro')
+                recall = recall_score(y_pred=predictions, y_true=y_test, average='macro')
+                f1 = f1_score(y_pred=predictions, y_true=y_test, average='macro')
 
                 logger.info(f'{feature}{data_file} accuracy - in domain sample: {accuracy}')
                 logger.info(f'{feature}{data_file} precision - in domain sample: {precision}')
@@ -233,7 +233,7 @@ for feature in FEATURE_TYPES:
 
 
                 logger.info(f'starting out of sample testing for {feature} {data_file}')               
-                ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+value+'.npz'
+                ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+'.npz'
                 ood_x = sp.sparse.load(data_filepath)
                 ood_y = ood_labels
                 predictions = clf.predict(ood_x)
@@ -269,7 +269,7 @@ for feature in FEATURE_TYPES:
                 OOD_results_dict[feature][data_file]['accuracy'] = accuracy
                 OOD_results_dict[feature][data_file]['fit_time'] = None
                 OOD_results_filepath = OOD_DATA_DIR+feature+'/'+'results'+data_file+'.pkl'
-                with open(results_filepath, 'wb') as f:
+                with open(OOD_results_filepath, 'wb') as f:
                     pickle.dump(OOD_results_dict, f)
                     logger.info(f'saving results file with path: {results_filepath}')
                     f.close()
