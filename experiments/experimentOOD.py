@@ -1,3 +1,11 @@
+#load usual shit
+#create test and train split of main dataset.
+#train
+#test generate confusion
+#test set run
+#generate confusion
+#save and log results
+
 import logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename='/csse/research/NativeLanguageID/mthesis-phonological/experiment/experiments/experiment.log', encoding='utf-8', level=logging.INFO, format='%(asctime)s %(message)s')
@@ -12,6 +20,7 @@ from sklearn.preprocessing import MaxAbsScaler
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.model_selection import train_test_split
 from collections import defaultdict
 import time
 import logging
@@ -52,11 +61,12 @@ label2language = {v: k for k, v in language2label.items()}
 SEED = 42
 
 BASE_DATA_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'
+OOD_DATA_DIR = '/csse/research/NativeLanguageId/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
 FEATURE_TYPES = ['Parrish', 'FastText', 'Zouhar', 'Glove', 'Sharma', 'tfidf']
 VALUES = ['True', 'False']
 FILENAMES = ['data_tokenize', 'data_spellcheck', 'data_spellcheck_lemmatize', 'data_spellcheck_stopwords', 'data_stopwords', 'data_lemmatize', 'data_lemmatize_stopwords', 'data_lemmatize_stopwords_spellcheck']
 LABELS = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/seed_42/full_labels_out_of_domain_experiment_dataframe_clean_chunks.pkl', 'rb')).label.values.tolist()
-
+ood_labels = pickle.load(open('/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/seed_42/y_europe_labels_out_of_domain_experiment_dataframe_chunks.pkl', 'rb')).label.values.tolist()
 scoring = ['f1_macro', 'precision_macro', 'recall_macro', 'accuracy']
 
 for feature in FEATURE_TYPES:
@@ -69,6 +79,7 @@ for feature in FEATURE_TYPES:
                     logger.info('File already exists. Not processing.')
                     logger.info(f'exiting {feature} {data_file} {value}')
                 else:
+                    logger.info(f'starting in sample work for {feature} {data_file} {value}')
                     data_filepath = BASE_DATA_DIR+feature+'/'+data_file+value+'.npz'
                     X = sp.sparse.load_npz(data_filepath)
                     y = LABELS
@@ -76,60 +87,94 @@ for feature in FEATURE_TYPES:
                     scaler = MaxAbsScaler()
                     scaler.fit(X)
                     X = scaler.transform(X)
-                    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+                    
+                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+                    
                     clf = LogisticRegression(random_state=42, max_iter=5000, verbose=True, solver='saga', n_jobs=23, multi_class='multinomial')
-                    scores = cross_validate(estimator=clf, X=X, y=y, cv=skf, scoring=scoring, return_estimator=True, return_indices=True)
+                    clf.fit(X_train, y_train)
+                    predictions = clf.predict(X_test)
+                    disp = ConfusionMatrixDisplay.from_predictions(y_test, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
+                    disp.plot()
+                    disp.ax_.set_title(f'{feature} Confusion Matrix')
+                    disp.ax_.tick_params(labelrotation=90, axis='x')
+                    disp.figure_.set_figwidth(11)
+                    disp.figure_.set_figheight(11)
+                    plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+'9010estimator'+data_file+value+'.svg'
+                    disp.figure_.savefig(plot_estimator_filepath)
+                    logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
+                    logger.info(f'generation of confusion matrix for in-domain complete')
 
-                
-                    with open(estimator_filepath, 'wb') as f:
-                        pickle.dump(scores, f)
-                        logger.info(f'saving estumator file with path: {estimator_filepath}')
-                    f.close()
-                    results_dict = defaultdict(dict)
-                    results_dict[feature] = {}
-                    results_dict[feature][data_file] = defaultdict(dict)
-                    results_dict[feature][data_file][value] = defaultdict(dict)
-                    logger.info(f'results for: {feature} {data_file} {value}')
-                    logger.info(f'f1 scores: {scores['test_f1_macro']}')
-                    results_dict[feature][data_file][value]['f1_macro'] = scores['test_f1_macro']
-                    logger.info(f'precision: {scores['test_precision_macro']}')
-                    results_dict[feature][data_file][value]['precision_macro'] = scores['test_precision_macro']
-                    logger.info(f'recall: {scores['test_recall_macro']}')
-                    results_dict[feature][data_file][value]['recall_macro'] = scores['test_recall_macro']
-                    logger.info(f'accuracy: {scores['test_accuracy']}')
-                    results_dict[feature][data_file][value]['accuracy'] = scores['test_accuracy']
-                    logger.info(f'fit time: {scores['fit_time']}')
-                    results_dict[feature][data_file][value]['fit_time'] = scores['fit_time']
-                    results_filepath = BASE_DATA_DIR+feature+'/'+'results'+data_file+value+'.pkl'
+                    accuracy = accuracy_score(y_pred=predictions, y_true=y)
+                    precision = precision_score(y_pred=predictions, y_true=y, average='macro')
+                    recall = recall_score(y_pred=predictions, y_true=y, average='macro')
+                    f1 = f1_score(y_pred=predictions, y_true=y, average='macro')
+
+                    logger.info(f'{feature}{data_file}{value} accuracy - in domain sample: {accuracy}')
+                    logger.info(f'{feature}{data_file}{value} precision - in domain sample: {precision}')
+                    logger.info(f'{feature}{data_file}{value} recall - in domain sample: {recall}')
+                    logger.info(f'{feature}{data_file}{value} f1 score - in domain sample: {f1}')
+
+                    in_results_dict = defaultdict(dict)
+                    in_results_dict[feature] = {}
+                    in_results_dict[feature][data_file] = defaultdict(dict)
+                    in_results_dict[feature][data_file][value] = defaultdict(dict)
+                    in_results_dict[feature][data_file][value]['f1_macro'] = f1
+                    in_results_dict[feature][data_file][value]['precision_macro'] = precision
+                    in_results_dict[feature][data_file][value]['recall_macro'] = recall
+                    in_results_dict[feature][data_file][value]['accuracy'] = accuracy
+                    in_results_dict[feature][data_file][value]['fit_time'] = None
+                    results_filepath = BASE_DATA_DIR+feature+'/'+'9010results'+data_file+value+'.pkl'
                     with open(results_filepath, 'wb') as f:
                         pickle.dump(results_dict, f)
                         logger.info(f'saving results file with path: {results_filepath}')
                     f.close()
-                    del results_dict
+                    del in_results_dict
 
-                    del clf
-                    for i in range(0,5):
-                        logger.info(f'generating confusion matrix {i+1} of 5 (total:5)')
-                        clf = scores['estimator'][i]
-                        X_ind = scores['indices']['test'][i]
-                        X_tmp = sp.sparse.csr_matrix(sp.sparse.vstack([X[j] for j in X_ind]))
-                        y_tmp =  [y[j] for j in X_ind]
-                        predictions = clf.predict(X_tmp)
-                        disp = ConfusionMatrixDisplay.from_predictions(y_tmp, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
-                        disp.plot()
-                        disp.ax_.set_title(f'{feature} Confusion Matrix')
-                        disp.ax_.tick_params(labelrotation=90, axis='x')
-                        disp.figure_.set_figwidth(11)
-                        disp.figure_.set_figheight(11)
-                        plot_estimator_filepath = BASE_DATA_DIR+feature+'/'+'plot'+f'{i+1}'+'estimator'+data_file+value+'.svg'
-                        disp.figure_.savefig(plot_estimator_filepath)
-                        logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
-                        logger.info(f'generation of confusion matrix {i+1} of 5 (total:5) complete')
-                    del skf
-                    del clf
-                    del scores
-                    del X
+
+                    logger.info(f'starting out of sample testing for {feature} {data_file} {value}')               
+                    ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+value+'.npz'
+                    ood_x = sp.sparse.load(data_filepath)
+                    ood_y = ood_labels
+                    predictions = clf.predict(ood_x)
+                    logger.info(f'preparing OOS confusion matrix')
+                    disp = ConfusionMatrixDisplay.from_predictions(y_test, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
+                    disp.plot()
+                    disp.ax_.set_title(f'{feature} OOS Confusion Matrix')
+                    disp.ax_.tick_params(labelrotation=90, axis='x')
+                    disp.figure_.set_figwidth(11)
+                    disp.figure_.set_figheight(11)
+                    plot_estimator_filepath = OOD_DATA_DIR+feature+'/'+'plot'+'9010estimator'+data_file+value+'.svg'
+                    disp.figure_.savefig(plot_estimator_filepath)
+                    logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
+                    logger.info(f'generation of confusion matrix for out of sample complete')
+
+                    accuracy = accuracy_score(y_pred=predictions, y_true=ood_y)
+                    precision = precision_score(y_pred=predictions, y_true=ood_y, average='macro')
+                    recall = recall_score(y_pred=predictions, y_true=ood_y, average='macro')
+                    f1 = f1_score(y_pred=predictions, y_true=ood_y, average='macro')
+
+                    logger.info(f'{feature}{data_file}{value} accuracy - out of sample: {accuracy}')
+                    logger.info(f'{feature}{data_file}{value} precision - out of sample: {precision}')
+                    logger.info(f'{feature}{data_file}{value} recall - out of sample: {recall}')
+                    logger.info(f'{feature}{data_file}{value} f1 score - out of sample: {f1}')
+ 
+                    OOD_results_dict = defaultdict(dict)
+                    OOD_results_dict[feature] = {}
+                    OOD_results_dict[feature][data_file] = defaultdict(dict)
+                    OOD_results_dict[feature][data_file][value] = defaultdict(dict)
+                    OOD_results_dict[feature][data_file][value]['f1_macro'] = f1
+                    OOD_results_dict[feature][data_file][value]['precision_macro'] = precision
+                    OOD_results_dict[feature][data_file][value]['recall_macro'] = recall
+                    OOD_results_dict[feature][data_file][value]['accuracy'] = accuracy
+                    OOD_results_dict[feature][data_file][value]['fit_time'] = None
+                    OOD_results_filepath = OOD_DATA_DIR+feature+'/'+'results'+data_file+value+'.pkl'
+                    with open(results_filepath, 'wb') as f:
+                        pickle.dump(results_dict, f)
+                        logger.info(f'saving results file with path: {results_filepath}')
+                    f.close()
+                    del OOD_results_dict
                     logger.info(f'exiting {feature} {data_file} {value}') 
+
         elif feature == 'Zouhar':
             logger.info(f'entering {feature} {data_file}')
             estimator_filepath = BASE_DATA_DIR+feature+'/'+'estimator'+data_file+'.pkl'
