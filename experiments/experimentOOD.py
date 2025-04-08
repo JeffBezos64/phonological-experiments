@@ -238,7 +238,7 @@ for feature in FEATURE_TYPES:
                 ood_y = ood_labels
                 predictions = clf.predict(ood_x)
                 logger.info(f'preparing OOS confusion matrix')
-                disp = ConfusionMatrixDisplay.from_predictions(y_test, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
+                disp = ConfusionMatrixDisplay.from_predictions(ood_y, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
                 disp.plot()
                 disp.ax_.set_title(f'{feature} OOS Confusion Matrix')
                 disp.ax_.tick_params(labelrotation=90, axis='x')
