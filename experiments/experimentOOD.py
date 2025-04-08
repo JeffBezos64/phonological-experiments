@@ -61,7 +61,7 @@ label2language = {v: k for k, v in language2label.items()}
 SEED = 42
 
 BASE_DATA_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/'
-OOD_DATA_DIR = '/csse/research/NativeLanguageId/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
+OOD_DATA_DIR = '/csse/research/NativeLanguageID/mthesis-phonological/experiment/pickles/pickled_datasets/OOD/'
 FEATURE_TYPES = ['Parrish', 'FastText', 'Zouhar', 'Glove', 'Sharma', 'tfidf']
 VALUES = ['True', 'False']
 FILENAMES = ['data_tokenize', 'data_spellcheck', 'data_spellcheck_lemmatize', 'data_spellcheck_stopwords', 'data_stopwords', 'data_lemmatize', 'data_lemmatize_stopwords', 'data_lemmatize_stopwords_spellcheck']
@@ -132,11 +132,15 @@ for feature in FEATURE_TYPES:
 
                     logger.info(f'starting out of sample testing for {feature} {data_file} {value}')               
                     ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+value+'.npz'
-                    ood_x = sp.sparse.load_npz(data_filepath)
+                    logger.info(f'{ood_data_filepath}')
+                    ood_x = sp.sparse.load_npz(ood_data_filepath)
+                    logger.info(f'length of ood_x {ood_x.shape}')
                     ood_y = ood_labels
-                    predictions = clf.predict(ood_x)
+                    logger.info(f'length of ood_y {len(ood_y)}')
+                    predictions1 = clf.predict(ood_x)
+                    logger.info(f'length of predictions {predictions1.shape}')
                     logger.info(f'preparing OOS confusion matrix')
-                    disp = ConfusionMatrixDisplay.from_predictions(ood_y, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
+                    disp = ConfusionMatrixDisplay.from_predictions(y_true=ood_y, y_pred=predictions1, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
                     disp.plot()
                     disp.ax_.set_title(f'{feature} OOS Confusion Matrix')
                     disp.ax_.tick_params(labelrotation=90, axis='x')
@@ -147,10 +151,10 @@ for feature in FEATURE_TYPES:
                     logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
                     logger.info(f'generation of confusion matrix for out of sample complete')
 
-                    accuracy = accuracy_score(y_pred=predictions, y_true=ood_y)
-                    precision = precision_score(y_pred=predictions, y_true=ood_y, average='macro')
-                    recall = recall_score(y_pred=predictions, y_true=ood_y, average='macro')
-                    f1 = f1_score(y_pred=predictions, y_true=ood_y, average='macro')
+                    accuracy = accuracy_score(y_pred=predictions1, y_true=ood_y)
+                    precision = precision_score(y_pred=predictions1, y_true=ood_y, average='macro')
+                    recall = recall_score(y_pred=predictions1, y_true=ood_y, average='macro')
+                    f1 = f1_score(y_pred=predictions1, y_true=ood_y, average='macro')
 
                     logger.info(f'{feature}{data_file}{value} accuracy - out of sample: {accuracy}')
                     logger.info(f'{feature}{data_file}{value} precision - out of sample: {precision}')
@@ -172,7 +176,10 @@ for feature in FEATURE_TYPES:
                         logger.info(f'saving results file with path: {results_filepath}')
                     f.close()
                     del OOD_results_dict
+                    del predictions
+                    del predictions1
                     logger.info(f'exiting {feature} {data_file} {value}') 
+
 
         elif feature == 'Zouhar' or feature == 'tfidf':
             logger.info(f'entering {feature} {data_file}')
@@ -234,11 +241,11 @@ for feature in FEATURE_TYPES:
 
                 logger.info(f'starting out of sample testing for {feature} {data_file}')               
                 ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+'.npz'
-                ood_x = sp.sparse.load_npz(data_filepath)
+                ood_x = sp.sparse.load_npz(ood_data_filepath)
                 ood_y = ood_labels
-                predictions = clf.predict(ood_x)
+                predictions1 = clf.predict(ood_x)
                 logger.info(f'preparing OOS confusion matrix')
-                disp = ConfusionMatrixDisplay.from_predictions(ood_y, predictions, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
+                disp = ConfusionMatrixDisplay.from_predictions(ood_y, predictions1, display_labels=[label2language[label] for label in clf.classes_], xticks_rotation=90, colorbar=False)
                 disp.plot()
                 disp.ax_.set_title(f'{feature} OOS Confusion Matrix')
                 disp.ax_.tick_params(labelrotation=90, axis='x')
@@ -249,10 +256,10 @@ for feature in FEATURE_TYPES:
                 logger.info(f'saving confusion matrix to {plot_estimator_filepath}')
                 logger.info(f'generation of confusion matrix for out of sample complete')
 
-                accuracy = accuracy_score(y_pred=predictions, y_true=ood_y)
-                precision = precision_score(y_pred=predictions, y_true=ood_y, average='macro')
-                recall = recall_score(y_pred=predictions, y_true=ood_y, average='macro')
-                f1 = f1_score(y_pred=predictions, y_true=ood_y, average='macro')
+                accuracy = accuracy_score(y_pred=predictions1, y_true=ood_y)
+                precision = precision_score(y_pred=predictions1, y_true=ood_y, average='macro')
+                recall = recall_score(y_pred=predictions1, y_true=ood_y, average='macro')
+                f1 = f1_score(y_pred=predictions1, y_true=ood_y, average='macro')
 
                 logger.info(f'{feature}{data_file}{value} accuracy - out of sample: {accuracy}')
                 logger.info(f'{feature}{data_file}{value} precision - out of sample: {precision}')
@@ -274,5 +281,7 @@ for feature in FEATURE_TYPES:
                     logger.info(f'saving results file with path: {results_filepath}')
                     f.close()
                 del OOD_results_dict
+                del predictions
+                del predictions1
                 logger.info(f'exiting {feature} {data_file} {value}')  
 logger.info('-----END OF RUN ------') 
