@@ -237,7 +237,10 @@ for feature in FEATURE_TYPES:
                     logger.info(f'saving results file with path: {results_filepath}')
                     f.close()
                 del in_results_dict
-
+                del accuracy
+                del precision
+                del recall
+                del f1
 
                 logger.info(f'starting out of sample testing for {feature} {data_file}')               
                 ood_data_filepath = OOD_DATA_DIR+feature+'/'+data_file+'.npz'
@@ -261,10 +264,10 @@ for feature in FEATURE_TYPES:
                 recall = recall_score(y_pred=predictions1, y_true=ood_y, average='macro')
                 f1 = f1_score(y_pred=predictions1, y_true=ood_y, average='macro')
 
-                logger.info(f'{feature}{data_file}{value} accuracy - out of sample: {accuracy}')
-                logger.info(f'{feature}{data_file}{value} precision - out of sample: {precision}')
-                logger.info(f'{feature}{data_file}{value} recall - out of sample: {recall}')
-                logger.info(f'{feature}{data_file}{value} f1 score - out of sample: {f1}')
+                logger.info(f'{feature}{data_file} accuracy - out of sample: {accuracy}')
+                logger.info(f'{feature}{data_file} precision - out of sample: {precision}')
+                logger.info(f'{feature}{data_file} recall - out of sample: {recall}')
+                logger.info(f'{feature}{data_file} f1 score - out of sample: {f1}')
  
                 OOD_results_dict = defaultdict(dict)
                 OOD_results_dict[feature] = {}
