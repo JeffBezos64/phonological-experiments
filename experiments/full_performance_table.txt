@@ -1,0 +1,11 @@
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|1|1|}
+\hline
+\multicolumn{14}{|c|}{Task time of each feature type and pre-processing method} \\
+\hline
+ Feature&tokenize&spellcheck&spellcheck lemmatize&spellcheck stopwords&stopwords&lemmatize&lemmatize stopwords&lemmatize stopwords spellcheck&AVG&MAX&MIN\\ \hline
+\end{tabular}}
+\caption{This table contains the peak memory reported by profiler for each feature type and pre-processing combination in B. Average, Max and Min are reported in GiB.}
+\label{tab:appendix-chap6-full-timing-info}
+\end{table}

@@ -1,0 +1,21 @@
+Time
+Zouhar data tokenize 28538.390192745952
+Zouhar data spellcheck 28210.64024177892
+Zouhar data spellcheck lemmatize 28062.669559474103
+Zouhar data spellcheck stopwords 23338.055088754045
+Zouhar data stopwords 23343.883692524163
+Zouhar data lemmatize  27837.905171219958
+Zouhar data lemmatize stopwords 23142.938496830873
+Zouhar data lemmatize stopwords spellcheck 712773114
+
+
+Memory 
+Zouhar data tokenize 963553329
+Zouhar data spellcheck 878239003
+Zouhar data spellcheck lemmatize 848572847
+Zouhar data spellcheck stopwords 738529533
+Zouhar data stopwords 827192917
+Zouhar data lemmatize 932186494
+Zouhar data lemmatize stopwords 800498335
+Zouhar data lemmatize stopwords spellcheck 23065.542390774935
+

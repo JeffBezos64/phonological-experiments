@@ -1,0 +1,37 @@
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multicolumn{10}{|c|}{Average reported time of feature extraction}\\
+\hline
+FastText False&  FastText True&  Glove False&  Glove True&  Parrish False&  Parrish True&  Sharma False&  Sharma True&  TFIDF& Zouhar  \\ \hline
+ 4833.553059 &  4830.921975& 4748.322208 & 4789.347956 & 2537.878325 & 2551.522493 & 2561.901822 & 2578.7729 & 14.26642218 & 25692.5031\\ \hline
+\end{tabular}}
+\caption{This table contains the average time reported by profiler for each feature type in seconds.
+}
+\label{tab:chap6-average-time}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multicolumn{12}{|c|}{Task time of each feature type and pre-processing method} \\
+\hline
+ Feature&tokenize&spellcheck&spellcheck lemmatize&spellcheck stopwords&stopwords&lemmatize&lemmatize stopwords&lemmatize stopwords spellcheck&AVG GiB&MAX&MIN\\ \hline
+FastText False&5387.028633&5356.026072&5292.064654&4332.372933&4389.839755&5326.646683&4312.932961&4271.512783&4833.553059&5387.028633&4271.512783\\
+FastText True&5406.207754&5293.279561&5347.703603&4350.556243&4343.765145&5297.720969&4311.307371&4296.835156&4830.921975&5406.207754&4296.835156\\
+GloVe False&5217.512041&5241.22332&5222.248531&4273.885993&4286.651537&5179.884924&4280.02898&4285.142337&4748.322208&5241.22332&4273.885993\\
+GloVe True&5288.044865&5536.448198&5204.608301&4282.762012&4303.391639&5206.912604&4274.71828&4217.897749&4789.347956&5536.448198&4217.897749\\
+Parrish False&2802.99973&2799.85476&2766.942692&2283.685599&2303.076168&2797.098666&2282.069197&2267.299789&2537.878325&2802.99973&2267.299789\\
+Parrish True&2847.179948&2828.554925&2786.682057&2278.379384&2334.997608&2789.68525&2280.614882&2266.085894&2551.522493&2847.179948&2266.085894\\
+Sharma False&2834.473649&2823.824635&2788.491355&2364.60896&2319.500055&2776.402447&2307.337738&2280.575735&2561.901822&2834.473649&2280.575735\\
+Sharma True&2848.975222&2858.314077&2804.702841&2334.098403&2324.654613&2826.688163&2324.696614&2308.053269&2578.7729&2858.314077&2308.053269\\
+TFIDF&17.81922093&15.32719032&15.4332549&10.57220508&13.51764412&17.69902232&13.38841454&10.3744252&14.26642218&17.81922093&10.3744252\\
+Zouhar&28538.39019&28210.64024&28062.66956&23338.05509&23343.88369&27837.90517&23142.9385&23065.54239&25692.5031&28538.39019&23065.54239\\ \hline
+
+\end{tabular}}
+\caption{This table contains the peak memory reported by profiler for each feature type and pre-processing combination in B. Average, Max and Min are reported in GiB.}
+\label{tab:appendix-chap6-full-timing-info}
+\end{table}
+

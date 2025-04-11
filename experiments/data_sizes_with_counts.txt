@@ -1,0 +1,214 @@
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{ll||ll}
+\hline  
+\multicolumn{4}{|c|}{Dataset sizes} \\
+\hline
+\multicolumn{2}{|c||}{5 Fold} & \multicolumn{2}{|c|}{90:10}\\
+\hline
+Train & 53600 & Train & 60300\\
+Test & 13400 &  Test & 6700 \\
+All & 67000 & Out of Sample& 5317\\ \hline
+\end{tabular}}
+\caption{This table describes the number of samples present in the
+dataset used across the experiments}
+\label{Chap6-dataset-sizes}
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{ll||ll}
+\hline  
+\multicolumn{4}{|c|}{Language Breakdown of an example 5FCV fold} \\
+\hline
+\multicolumn{2}{|c||}{Train Language Breakdown} & \multicolumn{2}{|c|}{Test Language Breakdown}\\
+\hline
+English & 2966 & English & 741 \\
+German & 2473 & German & 618 \\
+Bulgarian & 2333 & Bulgarian & 583 \\
+Croatian & 2092 & Croatian & 523 \\
+Czech & 2215 & Czech & 553 \\
+Estonian & 2234 & Estonian & 559 \\
+Finnish & 2223 & Finnish & 555 \\
+French & 2449 & French & 613 \\
+Greek & 2442 & Greek & 611 \\
+Hungarian & 2295 & Hungarian & 574 \\
+Italian & 2274 & Italian & 568 \\
+Lithuanian & 1932 & Lithuanian & 483 \\
+Dutch & 2570 & Dutch & 642  \\
+Norwegian & 2356 & Norwegian & 589 \\
+Polish & 2350 & Polish & 587 \\
+Portuguese & 2247 & Portuguese & 562 \\
+Romanian & 2172 & Romanian & 543 \\
+Russian & 2346 & Russian & 587 \\
+Serbian & 2182 & Serbian & 546 \\
+Slovenian & 2213 & Slovenian & 553 \\
+Spanish & 2401 & Spanish & 601 \\
+Swedish & 2408 & Swedish & 603 \\
+Turkish & 2427 & Turkish & 606 \\ \hline
+\end{tabular}}
+\caption{This table describes language and count used in fold 1 of the 5FCV}
+\label{Chap6-5FCV-dataset-breakdown}
+\end{table}
+
+
+The total for in domain training split is English is 2966
+The total for in domain training split is German is 2473
+The total for in domain training split is Bulgarian is 2333
+The total for in domain training split is Croatian is 2092
+The total for in domain training split is Czech is 2215
+The total for in domain training split is Estonian is 2234
+The total for in domain training split is Finnish is 2223
+The total for in domain training split is French is 2449
+The total for in domain training split is Greek is 2442
+The total for in domain training split is Hungarian is 2295
+The total for in domain training split is Italian is 2274
+The total for in domain training split is Lithuanian is 1932
+The total for in domain training split is Dutch is 2570
+The total for in domain training split is Norwegian is 2356
+The total for in domain training split is Polish is 2350
+The total for in domain training split is Portuguese is 2247
+The total for in domain training split is Romanian is 2172
+The total for in domain training split is Russian is 2346
+The total for in domain training split is Serbian is 2182
+The total for in domain training split is Slovenian is 2213
+The total for in domain training split is Spanish is 2401
+The total for in domain training split is Swedish is 2408
+The total for in domain training split is Turkish is 2427
+Length of in domain training split53600
+The total for in domain testing split is English is 741
+The total for in domain testing split is German is 618
+The total for in domain testing split is Bulgarian is 583
+The total for in domain testing split is Croatian is 523
+The total for in domain testing split is Czech is 553
+The total for in domain testing split is Estonian is 559
+The total for in domain testing split is Finnish is 555
+The total for in domain testing split is French is 613
+The total for in domain testing split is Greek is 611
+The total for in domain testing split is Hungarian is 574
+The total for in domain testing split is Italian is 568
+The total for in domain testing split is Lithuanian is 483
+The total for in domain testing split is Dutch is 642
+The total for in domain testing split is Norwegian is 589
+The total for in domain testing split is Polish is 587
+The total for in domain testing split is Portuguese is 562
+The total for in domain testing split is Romanian is 543
+The total for in domain testing split is Russian is 587
+The total for in domain testing split is Serbian is 546
+The total for in domain testing split is Slovenian is 553
+The total for in domain testing split is Spanish is 601
+The total for in domain testing split is Swedish is 603
+The total for in domain testing split is Turkish is 606
+Length of in domain testing split13400
+Shape of entire in domain dataset (67000, 8192)
+
+
+----------- 90 10 ---------
+The total for in domain testing 90 10 split is English is 3316
+The total for in domain testing 90 10 split is German is 2777
+The total for in domain testing 90 10 split is Bulgarian is 2633
+The total for in domain testing 90 10 split is Croatian is 2340
+The total for in domain testing 90 10 split is Czech is 2483
+The total for in domain testing 90 10 split is Estonian is 2522
+The total for in domain testing 90 10 split is Finnish is 2510
+The total for in domain testing 90 10 split is French is 2764
+The total for in domain testing 90 10 split is Greek is 2735
+The total for in domain testing 90 10 split is Hungarian is 2592
+The total for in domain testing 90 10 split is Italian is 2552
+The total for in domain testing 90 10 split is Lithuanian is 2181
+The total for in domain testing 90 10 split is Dutch is 2890
+The total for in domain testing 90 10 split is Norwegian is 2670
+The total for in domain testing 90 10 split is Polish is 2650
+The total for in domain testing 90 10 split is Portuguese is 2504
+The total for in domain testing 90 10 split is Romanian is 2455
+The total for in domain testing 90 10 split is Russian is 2667
+The total for in domain testing 90 10 split is Serbian is 2455
+The total for in domain testing 90 10 split is Slovenian is 2464
+The total for in domain testing 90 10 split is Spanish is 2700
+The total for in domain testing 90 10 split is Swedish is 2699
+The total for in domain testing 90 10 split is Turkish is 2741
+Length of 90:10 split Train (60300, 8192)
+The total for in domain testing 90 10 split is English is 391
+The total for in domain testing 90 10 split is German is 314
+The total for in domain testing 90 10 split is Bulgarian is 283
+The total for in domain testing 90 10 split is Croatian is 275
+The total for in domain testing 90 10 split is Czech is 285
+The total for in domain testing 90 10 split is Estonian is 271
+The total for in domain testing 90 10 split is Finnish is 268
+The total for in domain testing 90 10 split is French is 298
+The total for in domain testing 90 10 split is Greek is 318
+The total for in domain testing 90 10 split is Hungarian is 277
+The total for in domain testing 90 10 split is Italian is 290
+The total for in domain testing 90 10 split is Lithuanian is 234
+The total for in domain testing 90 10 split is Dutch is 322
+The total for in domain testing 90 10 split is Norwegian is 275
+The total for in domain testing 90 10 split is Polish is 287
+The total for in domain testing 90 10 split is Portuguese is 305
+The total for in domain testing 90 10 split is Romanian is 260
+The total for in domain testing 90 10 split is Russian is 266
+The total for in domain testing 90 10 split is Serbian is 273
+The total for in domain testing 90 10 split is Slovenian is 302
+The total for in domain testing 90 10 split is Spanish is 302
+The total for in domain testing 90 10 split is Swedish is 312
+The total for in domain testing 90 10 split is Turkish is 292
+Length of 90:10 split test (6700, 8192)
+The total for out of sample experiment 90 10 split is English is 213
+The total for out of sample experiment 90 10 split is German is 244
+The total for out of sample experiment 90 10 split is Bulgarian is 256
+The total for out of sample experiment 90 10 split is Croatian is 229
+The total for out of sample experiment 90 10 split is Czech is 225
+The total for out of sample experiment 90 10 split is Estonian is 220
+The total for out of sample experiment 90 10 split is Finnish is 223
+The total for out of sample experiment 90 10 split is French is 242
+The total for out of sample experiment 90 10 split is Greek is 243
+The total for out of sample experiment 90 10 split is Hungarian is 233
+The total for out of sample experiment 90 10 split is Italian is 232
+The total for out of sample experiment 90 10 split is Lithuanian is 239
+The total for out of sample experiment 90 10 split is Dutch is 238
+The total for out of sample experiment 90 10 split is Norwegian is 211
+The total for out of sample experiment 90 10 split is Polish is 238
+The total for out of sample experiment 90 10 split is Portuguese is 212
+The total for out of sample experiment 90 10 split is Romanian is 235
+The total for out of sample experiment 90 10 split is Russian is 229
+The total for out of sample experiment 90 10 split is Serbian is 233
+The total for out of sample experiment 90 10 split is Slovenian is 247
+The total for out of sample experiment 90 10 split is Spanish is 224
+The total for out of sample experiment 90 10 split is Swedish is 210
+The total for out of sample experiment 90 10 split is Turkish is 241
+Size of the out of sample dataset (5317, 8192)
+
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{ll||ll}
+\hline  
+\multicolumn{6}{|c|}{Language Breakdown of out of sample experiment} \\
+\hline
+\multicolumn{2}{|c||}{Train Language} & \multicolumn{2}{|c|}{Test Language} &\multicolumn{2}{|c|}{out of sample}\\
+\hline
+English & 3316 & English & 391& English & 213\\
+German & 2777  & German & 314& German & 244\\
+Bulgarian & 2633 & Bulgarian & 283& Bulgarian & 256\\
+Croatian & 2340 & Croatian & 275& Croatian &229\\
+Czech & 2483 & Czech & 285& Czech & 225\\
+Estonian & 2522 & Estonian &271 & Estonian & 220\\
+Finnish & 2510 & Finnish &268& Finnish & 223\\
+French & 2764 & French &298& French & 242\\
+Greek & 2735 & Greek &318& Greek & 243\\
+Hungarian & 2592 & Hungarian &277& Hungarian & 233\\
+Italian & 2552 & Italian &290& Italian & 232\\
+Lithuanian &2181& Lithuanian &234& Lithuanian &239\\
+Dutch &2890& Dutch &322& Dutch &  238\\
+Norwegian &2670& Norwegian &275& Norwegian &211\\
+Polish &2650& Polish &287& Polish & 238\\
+Portuguese &2504& Portuguese &305& Portuguese & 212\\
+Romanian &2455& Romanian &260 & Romanian & 235\\
+Russian &2667& Russian &266& Russian & 229\\
+Serbian &2455& Serbian &273& Serbian & 233\\
+Slovenian &2464& Slovenian & 302& Slovenian & 247\\
+Spanish &2700& Spanish &302& Spanish & 224\\
+Swedish &2699& Swedish &312& Swedish & 210\\
+Turkish &2741& Turkish &292& Turkish &241\\ \hline
+\end{tabular}}
+\caption{This table describes language and count used in the out of sample experiment.}
+\label{Chap6-5FCV-dataset-breakdown}
+\end{table}

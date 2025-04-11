@@ -1,0 +1,166 @@
+FastText data tokenize False & 0.6197 & TFIDF data tokenize & 0.7420 \\ 
+Parrish data tokenize True & 0.6193 & Sharma data tokenize False & 0.3696 \\ 
+Sharma data tokenize True & 0.6190 & Sharma data tokenize True & 0.3888 \\ 
+GloVe data tokenize True & 0.6190 & Parrish data tokenize True & 0.2503 \\ 
+TFIDF data tokenize & 0.6185 & Parrish data tokenize False & 0.2061 \\ 
+GloVe data tokenize False & 0.6184 & GloVe data tokenize True & 0.1482 \\ 
+Parrish data tokenize False & 0.6070 & GloVe data tokenize False & 0.1463 \\
+Sharma data tokenize False & 0.6070 & FastText data tokenize True & 0.0419 \\ 
+FastText data tokenize True & 0.6190 & FastText data tokenize False & 0.0414 \\ 
+Zouhar data tokenize & 0.5000 & Zouhar data tokenize & 0.0406 \\ \hline
+FastText data spellcheck True & 0.6118 & TFIDF data spellcheck & 0.7510 \\ 
+GloVe data spellcheck True & 0.6115 & Sharma data spellcheck True & 0.3713 \\ 
+Sharma data spellcheck True & 0.6115 & Sharma data spellcheck False & 0.3549 \\ 
+TFIDF data spellcheck & 0.6115 & Parrish data spellcheck True & 0.2291 \\
+Parrish data spellcheck True & 0.6113 & Parrish data spellcheck False & 0.2212 \\ 
+FastText data spellcheck False & 0.6099 & GloVe data spellcheck True & 0.1456 \\ 
+GloVe data spellcheck False & 0.6093 & GloVe data spellcheck False & 0.1311 \\ 
+Parrish data spellcheck False & 0.6088 & Zouhar data spellcheck & 0.0434 \\ 
+Sharma data spellcheck False & 0.6088 & FastText data spellcheck True & 0.0427 \\ 
+Zouhar data spellcheck & 0.5064 & FastText data spellcheck False & 0.0414 \\ \hline
+TFIDF data spellcheck lemmatize & 0.6157 & TFIDF data spellcheck lemmatize & 0.7566 \\ 
+FastText data spellcheck lemmatize True & 0.6157 & Sharma data spellcheck lemmatize True & 0.3903 \\
+Sharma data spellcheck lemmatize True & 0.6148 & Sharma data spellcheck lemmatize False & 0.3842 \\
+GloVe data spellcheck lemmatize True & 0.6145 & Parrish data spellcheck lemmatize True & 0.2272 \\ 
+GloVe data spellcheck lemmatize False & 0.6143 & Parrish data spellcheck lemmatize False & 0.2227 \\
+Parrish data spellcheck lemmatize True & 0.6142 & GloVe data spellcheck lemmatize True & 0.1570 \\ 
+FastText data spellcheck lemmatize False & 0.6133 & GloVe data spellcheck lemmatize False & 0.1563 \\ 
+Parrish data spellcheck lemmatize False & 0.6099 & FastText data spellcheck lemmatize True & 0.0485 \\ 
+Sharma data spellcheck lemmatize False & 0.6099 & FastText data spellcheck lemmatize False & 0.0414 \\ 
+Zouhar data spellcheck lemmatize & 0.5096 & Zouhar data spellcheck lemmatize & 0.0506 \\ \hline
+FastText data spellcheck stopwords True & 0.5978 & TFIDF data spellcheck stopwords & 0.7918 \\ 
+TFIDF data spellcheck stopwords & 0.5975 & Sharma data spellcheck stopwords True & 0.4568 \\ 
+GloVe data spellcheck stopwords True & 0.5970 & Sharma data spellcheck stopwords False & 0.4440 \\ 
+Sharma data spellcheck stopwords True & 0.5969 & Parrish data spellcheck stopwords True & 0.2915 \\ 
+Parrish data spellcheck stopwords True & 0.5966 & Parrish data spellcheck stopwords False & 0.2823 \\ 
+GloVe data spellcheck stopwords False & 0.5963 & GloVe data spellcheck stopwords True & 0.1659 \\ 
+FastText data spellcheck stopwords False & 0.5963 & GloVe data spellcheck stopwords False & 0.1576 \\ 
+Parrish data spellcheck stopwords False & 0.5927 & FastText data spellcheck stopwords True & 0.0799 \\ 
+Sharma data spellcheck stopwords False & 0.5927 & FastText data spellcheck stopwords False & 0.0805 \\
+Zouhar data spellcheck stopwords & 0.5085 & Zouhar data spellcheck stopwords & 0.0649 \\ 
+GloVe data stopwords True & 0.6027 & TFIDF data stopwords & 0.7899 \\
+Sharma data stopwords True & 0.6022 & Sharma data stopwords True & 0.4636 \\ 
+Parrish data stopwords True & 0.6021 & Sharma data stopwords False & 0.4677 \\ 
+TFIDF data stopwords & 0.6021 & Parrish data stopwords True & 0.3186 \\ 
+FastText data stopwords True & 0.6021 & Parrish data stopwords False & 0.3045 \\ 
+GloVe data stopwords False & 0.6009 & GloVe data stopwords True & 0.1649 \\ 
+FastText data stopwords False & 0.6000 & GloVe data stopwords False & 0.1557 \\ 
+Parrish data stopwords False & 0.5881 & Zouhar data stopwords & 0.1181 \\ 
+Sharma data stopwords False & 0.5881 & FastText data stopwords True & 0.0540 \\ 
+Zouhar data stopwords & 0.5054 & FastText data stopwords False & 0.0414 \\ \hline
+GloVe data lemmatize False & 0.6239 & TFIDF data lemmatize & 0.7547 \\ 
+GloVe data lemmatize True & 0.6231 & Sharma data lemmatize True & 0.4061 \\ 
+TFIDF data lemmatize & 0.6230 & Sharma data lemmatize False & 0.3908 \\
+FastText data lemmatize True & 0.6228 & Parrish data lemmatize True & 0.2535 \\ 
+FastText data lemmatize False & 0.6225 & Parrish data lemmatize False & 0.2129 \\ 
+Sharma data lemmatize True & 0.6215 & GloVe data lemmatize False & 0.1522 \\
+Parrish data lemmatize True & 0.6209 & GloVe data lemmatize True & 0.1469 \\ 
+Parrish data lemmatize False & 0.6070 & FastText data lemmatize True & 0.0688 \\ 
+Sharma data lemmatize False & 0.6070 & FastText data lemmatize False & 0.0465 \\ 
+Zouhar data lemmatize & 0.5058 & Zouhar data lemmatize & 0.0414 \\ \hline
+Sharma data lemmatize stopwords True & 0.6109 & TFIDF data lemmatize stopwords & 0.7914 \\ 
+FastText data lemmatize stopwords True & 0.6107 & Sharma data lemmatize stopwords False & 0.5048 \\ 
+FastText data lemmatize stopwords False & 0.6106 & Sharma data lemmatize stopwords True & 0.5014 \\ 
+TFIDF data lemmatize stopwords & 0.6104 & Parrish data lemmatize stopwords True & 0.3620 \\ 
+GloVe data lemmatize stopwords True & 0.6103 & Parrish data lemmatize stopwords False & 0.3523 \\
+GloVe data lemmatize stopwords False & 0.6100 & GloVe data lemmatize stopwords True & 0.1866 \\ 
+Parrish data lemmatize stopwords True & 0.6093 & GloVe data lemmatize stopwords False & 0.1854 \\
+Sharma data lemmatize stopwords False & 0.5973 & Zouhar data lemmatize stopwords & 0.0647 \\
+Parrish data lemmatize stopwords False & 0.5973 & FastText data lemmatize stopwords True & 0.0615 \\
+Zouhar data lemmatize stopwords & 0.5170 & FastText data lemmatize stopwords False & 0.0414 \\ \hline
+GloVe data lemmatize stopwords spellcheck False & 0.6021 & TFIDF data lemmatize stopwords spellcheck & 0.7916 \\ 
+Sharma data lemmatize stopwords spellcheck True & 0.6009 & Sharma data lemmatize stopwords spellcheck True & 0.4794 \\ 
+Parrish data lemmatize stopwords spellcheck True & 0.6004 & Sharma data lemmatize stopwords spellcheck False & 0.4721 \\ 
+TFIDF data lemmatize stopwords spellcheck & 0.6004 & Parrish data lemmatize stopwords spellcheck True & 0.3079 \\ 
+FastText data lemmatize stopwords spellcheck True & 0.6000 & Parrish data lemmatize stopwords spellcheck False & 0.3051 \\ 
+FastText data lemmatize stopwords spellcheck False & 0.6000 & GloVe data lemmatize stopwords spellcheck False & 0.1790 \\
+GloVe data lemmatize stopwords spellcheck True & 0.5999 & GloVe data lemmatize stopwords spellcheck True & 0.1777 \\
+Parrish data lemmatize stopwords spellcheck False & 0.5993 & FastText data lemmatize stopwords spellcheck True & 0.0670 \\
+Sharma data lemmatize stopwords spellcheck False & 0.5993 & FastText data lemmatize stopwords spellcheck False & 0.0453 \\ 
+Zouhar data lemmatize stopwords spellcheck & 0.5046 & Zouhar data lemmatize stopwords spellcheck & 0.0512 \\ \hline
+
+--------------------------------------
+OOD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+ 
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+ 
+
+
+
+end of out of domain

@@ -1,0 +1,36 @@
+\begin{table}[!htbp]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|}
+\hline
+\multicolumn{10}{|c|}{Average reported memory of feature extraction}
+\hline
+ FastText False&  FastText True&  Glove False&  Glove True&  Parrish False&  Parrish True&  Sharma False&  Sharma True&  TFIDF& Zouhar  \\
+ 0.780158876& 0.780158999 & 0.780159241 & 0.780175755 & 0.780187223 & 0.78017554 & 0.780173996 & 0.780175533 & 0.780175505 & 0.780162585
+\end{tabular}}
+\caption{This table contains the average peak memory reported by profiler for each feature type in GigaBytes.e stopwords spellcheck 0.7916
+Sharma data lemmatize stopwords spellcheck True 0.6009 Sharma data lemmatiz
+}
+\label{tab:chap6-average-memory}
+\end{table}
+
+\begin{table}[]
+\resizebox{\textwidth}{!}{\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+\centering
+\hline
+\multicolumn{11}{|c|}{Memory usage of each feature type and preprocessing method}\\
+\hline
+ Feature&tokenize&spellcheck&spellcheck lemmatize&spellcheck stopwords&stopwords&lemmatize&lemmatize stopwords&lemmatize stopwords spellcheck&AVG GiB&MAX&MIN\\ \hline
+ FastText False&963538976&878230268&848571256&738527896&827191452&932185128&800496976&712771768&0.780158876&0.8973656&0.663820438\\
+ FastText True&963539272&878230468&848571424&738528032&827191556&932185208&800497024&712771792&0.780158999&0.897365876&0.66382046\\
+ Glove False&963539524&878230776&848571708&738528300&827191816&932185460&800497260&712772004&0.780159241&0.89736611&0.663820658\\
+ GloVe True&963670417&878231232&848580196&738528740&827192240&932185868&800497644&712772372&0.780175755&0.897488014&0.663821001\\
+ Parrish False&963659276&878230776&848571708&738648868&827191816&932185508&800497260&712772004&0.780187223&0.897477638&0.663820658\\
+ Parrish True&963676607&878231232&848572156&738528740&827192240&932185868&800497644&712772372&0.78017554&0.897493779&0.663821001 \\
+ Sharma False&963659276&878230776&848571708&738528300&827198704&932185516&800497308&712772004&0.780173996&0.897477638&0.663820658 \\
+ Sharma True&963676607&878231232&848572156&738528684&827192240&932185868&800497644&712772372&0.780175533&0.897493779&0.663821001 \\
+ TFIDF&963675620&878230432&848570996&738534660&827191432&932185052&800496820&712771548&0.780175505&0.89749286&0.663820233\\
+ Zouhar&963553329&878239003&848572847&738529533&827192917&932186494&800498335&712773114&0.780162585&0.897378967&0.663821692 \\hline
+\end{tabular}}
+\caption{This table contains the peak memory reported by profiler for each feature type and pre-processing combination in GiB.}
+\label{tab:appendix-chap6-full-memory-usage}
+\end{table}
